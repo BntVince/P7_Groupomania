@@ -1,0 +1,72 @@
+.main{
+    height: 100vh;
+}
+
+.main img{
+    width: 350px;
+    position: absolute;
+    top: 1em;
+    left: 0.5em;
+}
+
+.login{
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login__container{
+    background-color:  var(--dark-bg-color) ;
+    color: var(--dark-color);
+    padding: 1.5em;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 1em;
+    width: 300px;
+    height: 370px;
+}
+
+.login__container h1{
+    font-weight: 400;
+    margin-top: 0;
+}
+
+.login__container label{
+   margin-bottom: 0.5em;
+}
+
+.login__btn{
+    margin-top: 1em;
+    background-color: var(--dark-color);
+    color: white;
+    justify-self: end;
+}
+
+.login input{
+    border-radius: 0.5em;
+    border: none;
+    margin-bottom: 2em;
+    padding: 0.5em;
+}
+
+.have-account{
+    width: calc(300px + 52px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.have-account span{
+    margin-block: 0.5em;
+}
+
+.have-account button{
+    background-color: var(--secondary-color);
+    width: 175px;
+}

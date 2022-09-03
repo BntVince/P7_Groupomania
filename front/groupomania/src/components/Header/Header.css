@@ -1,0 +1,22 @@
+.header {
+    height: 5em;
+    position: sticky;
+    top: 0;
+    display: flex;
+    background-color: white;
+}
+.header__logo {
+    height: 100%;
+    width: 15em;
+    background-image: url("../../assets/icon-left-font-monochrome-black.png");
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
+}
+@media screen and (max-width: 859px){
+    .header__logo{
+        width: 4em;
+        background-position: left;
+        background-size: 20em;
+    }
+}
