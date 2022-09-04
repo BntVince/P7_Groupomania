@@ -1,0 +1,14 @@
+.posts-container {
+    width: 350px;
+    padding-inline: 10px;
+    margin-inline: auto;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    min-height: calc(100vh - 11em);
+}
+
+.posts-container li {
+    width: 100%;
+}

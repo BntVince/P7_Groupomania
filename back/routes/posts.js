@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const postsCtrl = require('../controllers/posts.js');
+const postsCtrl = require('../controllers/posts.controller.js');
 const auth = require('../middleware/auth.js')
 const multer = require('../middleware/multer-config.js')
 

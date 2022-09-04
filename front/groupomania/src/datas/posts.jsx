@@ -1,35 +1,27 @@
+import tortue from '../assets/tortue.png'
+
 const posts = [
    {
-      description: '',
+      description:
+         '1er post test depuis datas du front + balbab lblablablabblalbabl ablblalbblablablablablb alblablablblblablablablblablablablbla',
       imageUrl: '',
-      userId: '',
-      likes: 0,
-      dislikes: 0,
-      _id: '',
+      userId: '2',
+      likes: 2,
+      _id: '1',
    },
    {
-      description: '',
+      description: 'Rien à dire',
       imageUrl: '',
-      userId: '',
+      userId: '2',
       likes: 0,
-      dislikes: 0,
-      _id: '',
+      _id: '2',
    },
    {
-      description: '',
-      imageUrl: '',
-      userId: '',
+      description: 'Elle est pas belle ma tortue ????',
+      imageUrl: { tortue },
+      userId: '3',
       likes: 0,
-      dislikes: 0,
-      _id: '',
-   },
-   {
-      description: '',
-      imageUrl: '',
-      userId: '',
-      likes: 0,
-      dislikes: 0,
-      _id: '',
+      _id: '3',
    },
 ]
 

@@ -3,10 +3,11 @@ const app = express();
 const postsRoutes = require('./routes/posts.js');
 const userRoutes = require('./routes/user.js');
 const path = require('path');
-
+//const db = require('./models')
 
 
 app.use(express.json());
+
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
