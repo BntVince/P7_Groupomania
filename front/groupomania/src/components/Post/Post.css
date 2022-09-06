@@ -15,6 +15,12 @@
     display: flex;
     height: 3em;
     margin-bottom: 0.5em;
+    gap: 0.5em;
+}
+
+.post__body__header span {
+    align-self: center;
+    color: var(--dark-color);
 }
 
 .post__body__descr{

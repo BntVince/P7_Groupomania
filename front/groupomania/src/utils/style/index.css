@@ -7,14 +7,14 @@
 
 *{
     box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
 }
 
 body {
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-    color: var(--dark-color);
     margin: 0;
     list-style: none;
+    color: var(--dark-color);
 }
 
 .btn {
@@ -30,7 +30,7 @@ body {
     z-index: 1000;
     position: sticky;
     bottom: 0;
-    height: 5em;
+    height: 4em;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -42,4 +42,8 @@ body {
     margin-left: 1em;
     color: white;
     text-decoration: none;
+}
+
+.image-profile {
+    border-radius: 50%;
 }

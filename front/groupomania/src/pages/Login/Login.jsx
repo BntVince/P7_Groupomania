@@ -11,26 +11,34 @@ function Login() {
    const [haveAccount, setHaveAccount] = useState(true)
 
    return (
-      <div className="main">
-         <img src={logo} alt="Groupomania" />
-         <div className="login">
-            {haveAccount ? <Signin /> : <Signup />}
+      <div>
+         <div className="main">
+            <img src={logo} alt="Groupomania" />
+            <div className="login">
+               {haveAccount ? <Signin /> : <Signup />}
 
-            {haveAccount ? (
-               <div className="have-account">
-                  <span>Pas encore de compte ?</span>
-                  <button className="btn" onClick={() => setHaveAccount(false)}>
-                     Inscription
-                  </button>
-               </div>
-            ) : (
-               <div className="have-account">
-                  <span>Déjà un compte ?</span>
-                  <button className="btn" onClick={() => setHaveAccount(true)}>
-                     Connexion
-                  </button>
-               </div>
-            )}
+               {haveAccount ? (
+                  <div className="have-account">
+                     <span>Pas encore de compte ?</span>
+                     <button
+                        className="btn"
+                        onClick={() => setHaveAccount(false)}
+                     >
+                        Inscription
+                     </button>
+                  </div>
+               ) : (
+                  <div className="have-account">
+                     <span>Déjà un compte ?</span>
+                     <button
+                        className="btn"
+                        onClick={() => setHaveAccount(true)}
+                     >
+                        Connexion
+                     </button>
+                  </div>
+               )}
+            </div>
          </div>
          <Footer />
       </div>
