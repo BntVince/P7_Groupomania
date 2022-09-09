@@ -24,6 +24,8 @@ body {
     border-radius: 0.750em;
     border: none;
     padding: 0.35em;
+    background: transparent;
+    cursor: pointer;
 }
 
 .footer {

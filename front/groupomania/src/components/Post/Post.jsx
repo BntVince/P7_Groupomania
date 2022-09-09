@@ -19,7 +19,9 @@ function Post({ description, imageUrl, userId, likes }) {
          </div>
 
          <div className="post__interact">
-            <button className="like">Like</button>
+            <button className="btn--like btn">
+               <i className="fa-solid fa-heart"></i>
+            </button>
             <span className="likeNumber"> {likes} </span>
          </div>
       </div>

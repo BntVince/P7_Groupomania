@@ -15,7 +15,11 @@ function Login() {
          <div className="main">
             <img src={logo} alt="Groupomania" />
             <div className="login">
-               {haveAccount ? <Signin /> : <Signup />}
+               {haveAccount ? (
+                  <Signin />
+               ) : (
+                  <Signup setHaveAccount={setHaveAccount} />
+               )}
 
                {haveAccount ? (
                   <div className="have-account">

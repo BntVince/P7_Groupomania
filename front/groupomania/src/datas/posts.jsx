@@ -2,6 +2,7 @@ import tortue from '../assets/tortue.png'
 
 const posts = [
    {
+      date: '',
       description:
          '1er post test depuis datas du front + balbab lblablablabblalbabl ablblalbblablablablablb alblablablblblablablablblablablablbla',
       imageUrl: '',
@@ -10,6 +11,7 @@ const posts = [
       _id: '1',
    },
    {
+      date: '',
       description: 'Rien à dire',
       imageUrl: '',
       userId: '2',
@@ -17,6 +19,7 @@ const posts = [
       _id: '2',
    },
    {
+      date: '',
       description: 'Elle est pas belle ma tortue ????',
       imageUrl: { tortue },
       userId: '3',

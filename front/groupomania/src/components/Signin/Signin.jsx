@@ -16,9 +16,23 @@ function Signin() {
       if (email === '' || password === '') {
          alert("Veuillez remplir les champs du formulaire d'inscription")
       } else {
-         console.log(userData)
+         http
+            .post('/auth/login', userData)
+            .then((res) => {
+               const groupomaniaActiveUser = {
+                  userId: res.data.userId,
+                  token: res.data.token,
+               }
 
-         http.post('/auth/login', userData)
+               localStorage.setItem(
+                  'groupomaniaActiveUser',
+                  JSON.stringify(groupomaniaActiveUser)
+               )
+               window.location.href = './home'
+            })
+            .catch((error) => {
+               console.log(error)
+            })
       }
    }
 

@@ -7,14 +7,26 @@ import posts from '../../datas/posts'
 import './Home.css'
 
 function Home() {
+   if (!JSON.parse(localStorage.getItem('groupomaniaActiveUser'))) {
+      window.location.href = './'
+   }
    const [newPost, setNewPost] = useState(false)
+   const [activeToken, setActiveToken] = useState(
+      JSON.parse(localStorage.groupomaniaActiveUser).token
+   )
 
    return (
       <div className="page">
          <Header newPost={newPost} setNewPost={setNewPost} />
 
          <ul className="posts-container">
-            {newPost && <NewPost newPost={newPost} setNewPost={setNewPost} />}
+            {newPost && (
+               <NewPost
+                  newPost={newPost}
+                  setNewPost={setNewPost}
+                  activeToken={activeToken}
+               />
+            )}
             {posts.map(({ description, imageUrl, userId, likes, _id }) => (
                <li key={_id} className="post">
                   <Post
@@ -22,6 +34,7 @@ function Home() {
                      imageUrl={imageUrl}
                      userId={userId}
                      likes={likes}
+                     activeToken={activeToken}
                   />
                </li>
             ))}

@@ -1,3 +1,7 @@
+.post-container--new{
+    margin-bottom: 1em;
+}
+
 textarea {
     border: 0;
     padding-block: 1em;

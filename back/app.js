@@ -3,8 +3,10 @@ const app = express();
 const postsRoutes = require('./routes/posts.js');
 const userRoutes = require('./routes/user.js');
 const path = require('path');
-//const db = require('./models')
+const db = require('./models')
 
+
+db.sequelize.sync()
 
 app.use(express.json());
 

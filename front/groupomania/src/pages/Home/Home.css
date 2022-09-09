@@ -1,6 +1,7 @@
 
 .posts-container {
-    width: 350px;
+    max-width: 40%;
+    min-width: 350px;
     padding-inline: 10px;
     margin-inline: auto;
     overflow-y: scroll;

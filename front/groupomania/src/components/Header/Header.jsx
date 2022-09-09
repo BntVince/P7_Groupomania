@@ -10,7 +10,7 @@ function Header({ newPost, setNewPost }) {
    const [oldScroll, setOldScroll] = useState(0)
 
    const hideHeader = () => {
-      if (oldScroll < window.pageYOffset) {
+      if (oldScroll < window.pageYOffset && window.pageYOffset > 48) {
          setHeader(true)
       } else {
          setHeader(false)

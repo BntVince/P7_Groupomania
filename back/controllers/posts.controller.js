@@ -1,5 +1,6 @@
 const fs = require('fs');
-const Posts = {};
+const db = require('../models')
+const Posts = db.posts;
 
 exports.getAllPosts = (req, res, next) => {
     Posts.find()
@@ -14,20 +15,17 @@ exports.getOnePost = (req, res, next) => {
 };
 
 exports.addNewPost = (req, res, next) => {
-    const postObject = JSON.parse(req.body.post);
-    delete postObject._id;
-    delete postObject.userId;
-    const post = new Posts({
-        ...postObject,
+    const newPost = {
         userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        description: req.body.description,
+        imageUrl: '',
         likes: 0,
-        dislikes: 0,
-        usersLiked: [],
-        usersDisliked: []
-    });
-    post.save()
-        .then(() => res.status(201).json({ message: 'Nouvelle posts ajouté !' }))
+    }
+    
+    console.log(newPost.description)
+
+    Posts.create(newPost)
+        .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
         .catch(error => res.status(400).json({ error }));
 };
 
