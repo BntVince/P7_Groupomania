@@ -3,7 +3,9 @@ const db = require('../models')
 const Posts = db.posts;
 
 exports.getAllPosts = (req, res, next) => {
-    Posts.find()
+    Posts.findAll({
+        attributes: {exclude: ['updatedAt']}
+    })
         .then((posts) => res.status(200).json(posts))
         .catch(error => res.status(400).json({ error }));
 };
@@ -17,6 +19,8 @@ exports.getOnePost = (req, res, next) => {
 exports.addNewPost = (req, res, next) => {
     const newPost = {
         userId: req.auth.userId,
+        publisherName: req.body.userName,
+        publisherImg: req.body.profilImg,
         description: req.body.description,
         imageUrl: '',
         likes: 0,

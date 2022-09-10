@@ -1,11 +1,10 @@
 import './Header.css'
 import { Link } from 'react-router-dom'
-import profile from '../../assets/profile.png'
 import logo from '../../assets/logo-blanc-sans-texte.png'
 import { useState } from 'react'
 import newPostBtn from '../../assets/new-post-btn.png'
 
-function Header({ newPost, setNewPost }) {
+function Header({ newPost, setNewPost, activeUser }) {
    const [header, setHeader] = useState(false)
    const [oldScroll, setOldScroll] = useState(0)
 
@@ -34,8 +33,8 @@ function Header({ newPost, setNewPost }) {
             <img src={newPostBtn} alt="" />
          </button>
          <div className="header__right">
-            <p className="username">UserName</p>
-            <img src={profile} alt="" className="image-profile" />
+            <p className="username">{activeUser.userName}</p>
+            <img src={activeUser.profilImg} alt="" className="image-profile" />
          </div>
       </div>
    )

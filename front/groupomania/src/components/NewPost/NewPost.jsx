@@ -1,14 +1,13 @@
 import axios from 'axios'
 import { useState } from 'react'
-import profile from '../../assets/profile.png'
-import users from '../../datas/users'
 import './NewPost.css'
 import imageNewpost from '../../assets/ajout-image-post.png'
 import cancelNewPost from '../../assets/cancel-new-post.png'
 import postNewPost from '../../assets/post-new-post.png'
 
-function NewPost({ NewPost, setNewPost, activeToken }) {
+function NewPost({ setNewPost, activeToken, activeUser }) {
    axios.defaults.headers.common = { Authorization: `Bearer ${activeToken}` }
+   axios.defaults.baseURL = 'http://localhost:3001/api'
 
    const [scHeight, setScHeight] = useState(52)
    const textarea = document.querySelector('textarea')
@@ -28,15 +27,14 @@ function NewPost({ NewPost, setNewPost, activeToken }) {
       const newPostData = {
          description: description,
          imageUrl: imageUrl,
+         userName: activeUser.userName,
+         profilImg: activeUser.profilImg,
       }
       if (description === '') {
          alert('Vous ne pouvez pas envoyer un post vide')
       } else {
-         axios({
-            method: 'post',
-            url: 'http://localhost:3001/api/posts',
-            data: newPostData,
-         })
+         axios.post('/posts', newPostData)
+         setNewPost(false)
       }
    }
 
@@ -45,8 +43,12 @@ function NewPost({ NewPost, setNewPost, activeToken }) {
          <form className="post__body new-post-body" onSubmit={handleSubmit}>
             <div className="post__body__header new-post-body-header">
                <div className="flex-header">
-                  <img src={profile} alt="" className="image-profile" />
-                  <span> {users[1].userName} </span>
+                  <img
+                     src={activeUser.profilImg}
+                     alt=""
+                     className="image-profile"
+                  />
+                  <span> {activeUser.userName} </span>
                </div>
                <button
                   className="new-post-btn"

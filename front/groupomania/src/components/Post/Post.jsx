@@ -1,16 +1,20 @@
 import React from 'react'
-import users from '../../datas/users'
-import profile from '../../assets/profile.png'
 import './Post.css'
 
-function Post({ description, imageUrl, userId, likes }) {
-   const user = users.filter((user) => user.userId === userId)[0]
+function Post({
+   description,
+   imageUrl,
+   userId,
+   likes,
+   publisherName,
+   publisherImg,
+}) {
    return (
       <div className="post-container">
          <div className="post__body">
             <div className="post__body__header">
-               <img src={profile} alt="" className="image-profile" />
-               <span> {user.userName} </span>
+               <img src={publisherImg} alt="" className="image-profile" />
+               <span> {publisherName} </span>
             </div>
             <div className="post__body__descr">
                <span>{description}</span>

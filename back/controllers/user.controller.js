@@ -10,9 +10,9 @@ exports.signup = (req, res, next) => {
             const user ={
                 email: req.body.email,
                 userName: req.body.userName,
-                profilImg: "",
+                profilImg: 'http://localhost:3001/images/profils/default.png',
                 password: hash
-            };                                     console.log(user)
+            };
             User.create(user)
                 .then(() => res.status(201).json({ message: 'Utilisateur enregistré' }))
                 .catch((error) => res.status(400).json({ error }));
@@ -24,12 +24,12 @@ exports.login = (req, res, next) => {
     User.findOne({ where: { email: req.body.email }})
         .then((user) => {
             if (user === null) {
-               return res.status(401).json({ message: 'Email' });
+               return res.status(401).json({ message: 'La correspondance email/mot de passe, n\'existe pas!' });
             } else {
                 bcrypt.compare(req.body.password, user.password)
                     .then((valid) => {
                         if (!valid) {
-                           return res.status(401).json({ message: 'MDP' });
+                           return res.status(401).json({ message: 'La correspondance email/mot de passe, n\'existe pas!' });
                         } else {
                            return res.status(200).json({
                                 userId: user.id,
@@ -46,3 +46,11 @@ exports.login = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
+
+exports.check = (req, res, next) => {
+    User.findByPk(req.auth.userId, {
+        attributes: {exclude: ['id', 'createdAt', 'updatedAt', 'password', 'email']}
+    })
+    .then(user => res.status(200).json(user))
+    .catch(error => res.status(500).json({ error }));
+}

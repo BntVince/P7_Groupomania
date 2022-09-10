@@ -24,14 +24,14 @@ function Signin() {
                   token: res.data.token,
                }
 
-               localStorage.setItem(
+               sessionStorage.setItem(
                   'groupomaniaActiveUser',
                   JSON.stringify(groupomaniaActiveUser)
                )
                window.location.href = './home'
             })
             .catch((error) => {
-               console.log(error)
+               alert(error.response.data.message)
             })
       }
    }
