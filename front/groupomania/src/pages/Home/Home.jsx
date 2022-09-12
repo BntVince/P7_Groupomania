@@ -74,12 +74,15 @@ function Home() {
                }) => (
                   <li key={id} className="post">
                      <Post
+                        id={id}
                         description={description}
                         imageUrl={imageUrl}
                         userId={userId}
                         likes={likes}
                         publisherName={publisherName}
                         publisherImg={publisherImg}
+                        activeUser={activeUser}
+                        activeToken={activeToken}
                      />
                   </li>
                )

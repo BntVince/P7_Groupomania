@@ -20,7 +20,6 @@ function Signin() {
             .post('/auth/login', userData)
             .then((res) => {
                const groupomaniaActiveUser = {
-                  userId: res.data.userId,
                   token: res.data.token,
                }
 

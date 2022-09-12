@@ -16,6 +16,11 @@
     height: 3em;
     margin-bottom: 0.5em;
     gap: 0.5em;
+    justify-content: space-between;
+}
+
+.post__body__header__left{
+    display: flex;
 }
 
 .post__body__header span {
@@ -62,4 +67,33 @@
 .btn--like i {
     color: var(--primary-color);
     font-size: 2em;
+}
+
+.edit {
+    align-self: center;
+    padding-inline: .25em;
+    font-size: 2em;
+    position: relative;
+}
+
+.edit-menu{
+    display: none;
+    
+}
+
+.edit:hover .edit-menu{
+    display: grid;
+    gap: 0.25em;
+    position: absolute;
+    font-size: 0.5em;
+    list-style: none;
+    background-color: var(--dark-color);
+    color: white;
+    left: -160%;
+    padding: 0.25em;
+    border-radius: 0.25em;
+}
+
+.edit-menu__choice{
+    cursor: pointer;
 }

@@ -6,9 +6,6 @@ import cancelNewPost from '../../assets/cancel-new-post.png'
 import postNewPost from '../../assets/post-new-post.png'
 
 function NewPost({ setNewPost, activeToken, activeUser }) {
-   axios.defaults.headers.common = { Authorization: `Bearer ${activeToken}` }
-   axios.defaults.baseURL = 'http://localhost:3001/api'
-
    const [scHeight, setScHeight] = useState(52)
    const textarea = document.querySelector('textarea')
    const handleHeight = (e) => {
@@ -17,24 +14,41 @@ function NewPost({ setNewPost, activeToken, activeUser }) {
    }
 
    const [description, setDescription] = useState('')
-   const [imageUrl, setImageUrl] = useState('')
+   const [imageUrl, setImageUrl] = useState()
 
    function handleSubmit(e) {
       e.preventDefault()
-
-      console.log(description)
-
-      const newPostData = {
-         description: description,
-         imageUrl: imageUrl,
-         userName: activeUser.userName,
-         profilImg: activeUser.profilImg,
-      }
       if (description === '') {
          alert('Vous ne pouvez pas envoyer un post vide')
       } else {
-         axios.post('/posts', newPostData)
-         setNewPost(false)
+         axios.defaults.headers.common = {
+            Authorization: `Bearer ${activeToken}`,
+         }
+         axios.defaults.baseURL = 'http://localhost:3001/api'
+
+         const newPostData = new FormData()
+         newPostData.append('description', description)
+
+         newPostData.append('userName', activeUser.userName)
+         newPostData.append('profilImg', activeUser.profilImg)
+
+         if (imageUrl) {
+            console.log(imageUrl)
+
+            newPostData.append('file', imageUrl)
+            newPostData.append('fileName', imageUrl.name)
+            console.log(newPostData)
+            const config = {
+               headers: {
+                  'content-type': 'multipart/form-data',
+               },
+            }
+            axios.post('/posts', newPostData, config)
+            setNewPost(false)
+         } else {
+            axios.post('/posts', newPostData)
+            setNewPost(false)
+         }
       }
    }
 
@@ -74,8 +88,9 @@ function NewPost({ setNewPost, activeToken, activeUser }) {
                   type="file"
                   name="imageUrl"
                   id="imageUrl"
+                  accept="image/png, image/jpeg"
                   className="new-post-img-input"
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  onChange={(e) => setImageUrl(e.target.files[0])}
                />
             </div>
             <div className="new-post-bot">

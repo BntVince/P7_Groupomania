@@ -19,6 +19,11 @@ function Header({ newPost, setNewPost, activeUser }) {
 
    window.addEventListener('scroll', hideHeader)
 
+   const logOut = () => {
+      sessionStorage.removeItem('groupomaniaActiveUser')
+      window.location.href = '/'
+   }
+
    return (
       <div id="header" className={header ? 'header header-hide' : 'header'}>
          <Link to={'/home/'} className="header__logo header__left">
@@ -35,6 +40,14 @@ function Header({ newPost, setNewPost, activeUser }) {
          <div className="header__right">
             <p className="username">{activeUser.userName}</p>
             <img src={activeUser.profilImg} alt="" className="image-profile" />
+            <div className="edit">
+               <ul className="edit-menu">
+                  <li className="edit-menu__choice">Editer</li>
+                  <li className="edit-menu__choice" onClick={logOut}>
+                     Déconexion
+                  </li>
+               </ul>
+            </div>
          </div>
       </div>
    )

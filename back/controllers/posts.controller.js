@@ -17,20 +17,28 @@ exports.getOnePost = (req, res, next) => {
 };
 
 exports.addNewPost = (req, res, next) => {
-    const newPost = {
+    let newPost = {
         userId: req.auth.userId,
         publisherName: req.body.userName,
         publisherImg: req.body.profilImg,
         description: req.body.description,
-        imageUrl: '',
         likes: 0,
     }
     
-    console.log(newPost.description)
-
+   if (req.file) {
+    newPost = {
+        ...JSON.parse(req.body.post),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    };
     Posts.create(newPost)
         .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
         .catch(error => res.status(400).json({ error }));
+   }else{
+    Posts.create(newPost)
+    .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
+    .catch(error => res.status(400).json({ error }));
+   }
+
 };
 
 const modifyObject = (object, req, res, next) => {
@@ -83,15 +91,21 @@ exports.modifyPost = (req, res, next) => {
 
 exports.deletePosts = (req, res, next) => {
 
-    Posts.findOne({ _id: req.params.id })
-        .then((post) => {
-            if (post.userId === req.auth.userId) {
-                const filename = post.imageUrl.split('/images/')[1];
-                fs.unlink(`images/${filename}`, () => {
-                    Posts.deleteOne({ _id: req.params.id })
+    Posts.findByPk( req.params.id )
+        .then((post) => { console.log(req.auth.userId, post.userId)
+            if (post.userId == req.auth.userId) {
+                if (post.imageUrl === '' || !post.imageUrl) {
+                    Posts.destroy( { where :{ id: req.params.id }})
                         .then(() => res.status(200).json({ message: 'Post supprimé' }))
                         .catch(error => res.status(400).json({ error }));
-                })
+                } else {
+                    const filename = post.imageUrl.split('/images/')[1];
+                fs.unlink(`images/${filename}`, () => {
+                    Posts.destroy( { where :{ id: req.params.id }})
+                        .then(() => res.status(200).json({ message: 'Post supprimé' }))
+                        .catch(error => res.status(400).json({ error }));
+                })}
+                
             } else {
                 res.status(500).json({ message: 'Opération non-autorisé' })
             }

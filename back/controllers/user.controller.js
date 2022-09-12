@@ -49,7 +49,7 @@ exports.login = (req, res, next) => {
 
 exports.check = (req, res, next) => {
     User.findByPk(req.auth.userId, {
-        attributes: {exclude: ['id', 'createdAt', 'updatedAt', 'password', 'email']}
+        attributes: {exclude: [ 'createdAt', 'updatedAt', 'password', 'email']}
     })
     .then(user => res.status(200).json(user))
     .catch(error => res.status(500).json({ error }));
