@@ -14,3 +14,7 @@
 .posts-container li {
     width: 100%;
 }
+
+.posts-container::-webkit-scrollbar{
+    width: 0;
+}

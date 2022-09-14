@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import logo from '../../assets/logo-blanc-sans-texte.png'
 import { useState } from 'react'
 import newPostBtn from '../../assets/new-post-btn.png'
+import { useNavigate } from 'react-router-dom'
 
 function Header({ newPost, setNewPost, activeUser }) {
+   const navigate = useNavigate()
    const [header, setHeader] = useState(false)
    const [oldScroll, setOldScroll] = useState(0)
 
@@ -21,7 +23,7 @@ function Header({ newPost, setNewPost, activeUser }) {
 
    const logOut = () => {
       sessionStorage.removeItem('groupomaniaActiveUser')
-      window.location.href = '/'
+      navigate('/')
    }
 
    return (

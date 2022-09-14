@@ -1,9 +1,11 @@
 import http from '../../http-common'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Signin() {
    const [email, setEmail] = useState('')
    const [password, setPassword] = useState('')
+   const navigate = useNavigate()
 
    const handleSubmit = (e) => {
       e.preventDefault()
@@ -27,7 +29,7 @@ function Signin() {
                   'groupomaniaActiveUser',
                   JSON.stringify(groupomaniaActiveUser)
                )
-               window.location.href = './home'
+               navigate('/home')
             })
             .catch((error) => {
                alert(error.response.data.message)

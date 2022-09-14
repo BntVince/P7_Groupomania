@@ -5,17 +5,19 @@ import Header from '../../components/Header/Header'
 import NewPost from '../../components/NewPost/NewPost'
 import Post from '../../components/Post/Post'
 import './Home.css'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
-   if (!JSON.parse(sessionStorage.getItem('groupomaniaActiveUser'))) {
-      window.location.href = './'
-   }
+   const navigate = useNavigate()
    const [newPost, setNewPost] = useState(false)
    const [activeToken, setActiveToken] = useState(
-      JSON.parse(sessionStorage.groupomaniaActiveUser).token
+      sessionStorage.getItem('groupomaniaActiveUser')
+         ? JSON.parse(sessionStorage.getItem('groupomaniaActiveUser')).token
+         : ''
    )
    const [activeUser, setActiveUser] = useState({})
    const [allPosts, setAllPosts] = useState([])
+   const [update, setUpdate] = useState(false)
 
    axios.defaults.headers.common = { Authorization: `Bearer ${activeToken}` }
    axios.defaults.baseURL = 'http://localhost:3001/api'
@@ -26,7 +28,7 @@ function Home() {
             if (error || res.data == null) {
                sessionStorage.removeItem('groupomaniaActiveUser')
                setActiveToken('')
-               window.location.href = './'
+               navigate('/')
             } else {
                setActiveUser(res.data)
             }
@@ -34,16 +36,21 @@ function Home() {
          .catch(() => {
             sessionStorage.removeItem('groupomaniaActiveUser')
             setActiveToken('')
-            window.location.href = './'
+            navigate('/')
          })
-   }, [])
+   }, [navigate])
 
    useEffect(() => {
-      axios
-         .get('/posts')
-         .then((posts) => setAllPosts(posts.data))
-         .catch((error) => console.log(error))
-   }, [newPost])
+      setTimeout(() => {
+         axios
+            .get('/posts')
+            .then((posts) => {
+               setAllPosts(posts.data)
+               setUpdate(false)
+            })
+            .catch((error) => console.log(error))
+      }, 2000)
+   }, [update])
 
    return (
       <div className="page">
@@ -60,6 +67,7 @@ function Home() {
                   setNewPost={setNewPost}
                   activeToken={activeToken}
                   activeUser={activeUser}
+                  setUpdate={setUpdate}
                />
             )}
             {allPosts.map(
@@ -83,6 +91,7 @@ function Home() {
                         publisherImg={publisherImg}
                         activeUser={activeUser}
                         activeToken={activeToken}
+                        setUpdate={setUpdate}
                      />
                   </li>
                )

@@ -26,43 +26,42 @@ exports.addNewPost = (req, res, next) => {
     }
     
    if (req.file) {
-    newPost = {
-        ...JSON.parse(req.body.post),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    };
+    newPost.imageUrl= `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    }
     Posts.create(newPost)
         .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
         .catch(error => res.status(400).json({ error }));
-   }else{
-    Posts.create(newPost)
-    .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
-    .catch(error => res.status(400).json({ error }));
-   }
 
 };
 
-const modifyObject = (object, req, res, next) => {
-    Posts.updateOne({ _id: req.params.id }, { ...object, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Post modifié' }))
-        .catch(error => res.status(401).json({ error }));
-};
+// const modifyObject = (object, req, res, next) => {
+//     Posts.updateOne({ _id: req.params.id }, { ...object, _id: req.params.id })
+//         .then(() => res.status(200).json({ message: 'Post modifié' }))
+//         .catch(error => res.status(401).json({ error }));
+// };
 
 exports.modifyPost = (req, res, next) => {
-    let postObject
+    let postObject = {description: req.body.description}
     if (req.file) {
-        postObject = {
-            ...JSON.parse(req.body.post),
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        };
-        delete postObject.userId;
+        postObject.imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        
 
-        Posts.findOne({ _id: req.params.id })
-            .then(post => {
-                if (post.userId === req.auth.userId) {
-                    const filename = post.imageUrl.split('/images/')[1];
+        Posts.findByPk( req.params.id )
+            .then(post => { console.log('post find',postObject)
+                if (post.userId == req.auth.userId) {
+                    if (post.imageUrl) {
+                        const filename = post.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () => {
-                        modifyObject(postObject, req, res, next);
+                        Posts.update(postObject, {where: {id: req.params.id}})
+                        .then(() => res.status(200).json({ message: 'Post modifié' }))
+                        .catch(error => res.status(401).json({ error }))
                     });
+                    } else {
+                        Posts.update(postObject, {where: {id: req.params.id}})
+                        .then(() => res.status(200).json({ message: 'Post modifié' }))
+                        .catch(error => res.status(401).json({ error }))
+                    }
+                    
 
                 } else {
                     res.status(401).json({ message: 'Opération non-autorisé' })
@@ -71,15 +70,28 @@ exports.modifyPost = (req, res, next) => {
             .catch(error => res.status(400).json({ error }));
 
     } else {
-        postObject = {
-            ...req.body
-        };
-        delete postObject.userId;
-
-        Posts.findOne({ _id: req.params.id })
+        
+        Posts.findByPk( req.params.id )
             .then(post => {
-                if (post.userId === req.auth.userId) {
-                    modifyObject(postObject, req, res, next);
+                if (post.userId == req.auth.userId) { console.log(req.body)
+
+                    if (req.body.cancelImg==='true') {
+                        postObject.imageUrl = null
+
+                        const filename = post.imageUrl.split('/images/')[1];
+                    fs.unlink(`images/${filename}`, () => {
+                        Posts.update(postObject, {where: {id: req.params.id}})
+                        .then(() => res.status(200).json({ message: 'Post modifié' }))
+                        .catch(error => res.status(401).json({ error }))
+                    });
+
+                    }else{
+
+                    Posts.update(postObject, {where: {id: req.params.id}})
+                    .then(() => res.status(200).json({ message: 'Post modifié' }))
+                    .catch(error => res.status(401).json({ error }))
+
+                }
                 } else {
                     res.status(401).json({ message: 'Opération non-autorisé' })
                 }
@@ -99,8 +111,8 @@ exports.deletePosts = (req, res, next) => {
                         .then(() => res.status(200).json({ message: 'Post supprimé' }))
                         .catch(error => res.status(400).json({ error }));
                 } else {
-                    const filename = post.imageUrl.split('/images/')[1];
-                fs.unlink(`images/${filename}`, () => {
+                    const filename = post.imageUrl.split('/images/')[1]
+                    fs.unlink(`images/${filename}`, () => {
                     Posts.destroy( { where :{ id: req.params.id }})
                         .then(() => res.status(200).json({ message: 'Post supprimé' }))
                         .catch(error => res.status(400).json({ error }));

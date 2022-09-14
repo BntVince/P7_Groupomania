@@ -3,6 +3,8 @@
     flex-direction: column;
 }
 
+
+
 .post__body{
     background-color: var(--secondary-color);
     border-radius: 0.75em;
@@ -31,18 +33,19 @@
 .post__body__descr{
     background-color: white;
     border-radius: 0.75em;
-    padding-inline: 0.5em;
+    padding: 0.5em;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .post__body__descr img {
     border-radius: 1.5em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0;
 }
 
 .post__body__descr span{
-    padding-block: 1em;
+    padding-block: 0.75em;
 }
 
 .post__interact{
@@ -82,16 +85,18 @@
 }
 
 .edit:hover .edit-menu{
+    z-index: 1000;
     display: grid;
-    gap: 0.25em;
+    gap: 0.45em;
     position: absolute;
     font-size: 0.5em;
     list-style: none;
     background-color: var(--dark-color);
     color: white;
-    left: -160%;
+    left: -180%;
     padding: 0.25em;
     border-radius: 0.25em;
+    text-align: center;
 }
 
 .edit-menu__choice{

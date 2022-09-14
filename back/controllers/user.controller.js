@@ -10,7 +10,7 @@ exports.signup = (req, res, next) => {
             const user ={
                 email: req.body.email,
                 userName: req.body.userName,
-                profilImg: 'http://localhost:3001/images/profils/default.png',
+                profilImg: 'http://localhost:3001/images/default.png',
                 password: hash
             };
             User.create(user)
