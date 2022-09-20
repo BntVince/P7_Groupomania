@@ -1,6 +1,6 @@
 
 .posts-container {
-    max-width: 40%;
+    max-width: 33%;
     min-width: 350px;
     padding-inline: 10px;
     margin-inline: auto;
@@ -9,6 +9,7 @@
     flex-direction: column;
     gap: 1em;
     min-height: calc(100vh - 10em);
+    transition: all 300ms;
 }
 
 .posts-container li {

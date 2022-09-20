@@ -1,176 +1,207 @@
-const fs = require('fs');
+const fs = require('fs')
 const db = require('../models')
-const Posts = db.posts;
+const Posts = db.posts
+const Likes = db.likes
 
 exports.getAllPosts = (req, res, next) => {
-    Posts.findAll({
-        attributes: {exclude: ['updatedAt']}
-    })
-        .then((posts) => res.status(200).json(posts))
-        .catch(error => res.status(400).json({ error }));
-};
+   Posts.findAll({
+      attributes: { exclude: ['updatedAt', 'createdAt'] },
+   })
+      .then((posts) => res.status(200).json(posts))
+      .catch((error) => res.status(400).json({ error }))
+}
 
 exports.getOnePost = (req, res, next) => {
-    Posts.findOne({ _id: req.params.id })
-        .then(post => res.status(200).json(post))
-        .catch(error => res.status(404).json({ error }));
-};
+   Posts.findOne({ where: { id: req.params.id } })
+      .then((post) => res.status(200).json(post))
+      .catch((error) => res.status(404).json({ error }))
+}
 
 exports.addNewPost = (req, res, next) => {
-    let newPost = {
-        userId: req.auth.userId,
-        publisherName: req.body.userName,
-        publisherImg: req.body.profilImg,
-        description: req.body.description,
-        likes: 0,
-    }
-    
+   let newPost = {
+      userId: req.auth.userId,
+      publisherName: req.body.userName,
+      publisherImg: req.body.profilImg,
+      description: req.body.description,
+      likes: 0,
+   }
+
    if (req.file) {
-    newPost.imageUrl= `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    }
-    Posts.create(newPost)
-        .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
-        .catch(error => res.status(400).json({ error }));
-
-};
-
-// const modifyObject = (object, req, res, next) => {
-//     Posts.updateOne({ _id: req.params.id }, { ...object, _id: req.params.id })
-//         .then(() => res.status(200).json({ message: 'Post modifié' }))
-//         .catch(error => res.status(401).json({ error }));
-// };
+      newPost.imageUrl = `${req.protocol}://${req.get('host')}/images/${
+         req.file.filename
+      }`
+   }
+   Posts.create(newPost)
+      .then(() => res.status(201).json({ message: 'Nouveau post ajouté !' }))
+      .catch((error) => res.status(400).json({ error }))
+}
 
 exports.modifyPost = (req, res, next) => {
-    let postObject = {description: req.body.description}
-    if (req.file) {
-        postObject.imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        
+   let postObject = { description: req.body.description }
+   if (req.file) {
+      postObject.imageUrl = `${req.protocol}://${req.get('host')}/images/${
+         req.file.filename
+      }`
 
-        Posts.findByPk( req.params.id )
-            .then(post => { console.log('post find',postObject)
-                if (post.userId == req.auth.userId) {
-                    if (post.imageUrl) {
-                        const filename = post.imageUrl.split('/images/')[1];
-                    fs.unlink(`images/${filename}`, () => {
-                        Posts.update(postObject, {where: {id: req.params.id}})
-                        .then(() => res.status(200).json({ message: 'Post modifié' }))
-                        .catch(error => res.status(401).json({ error }))
-                    });
-                    } else {
-                        Posts.update(postObject, {where: {id: req.params.id}})
-                        .then(() => res.status(200).json({ message: 'Post modifié' }))
-                        .catch(error => res.status(401).json({ error }))
-                    }
-                    
+      Posts.findByPk(req.params.id)
+         .then((post) => {
+            console.log('post find', postObject)
+            if (post.userId == req.auth.userId) {
+               if (post.imageUrl) {
+                  const filename = post.imageUrl.split('/images/')[1]
+                  fs.unlink(`images/${filename}`, () => {
+                     Posts.update(postObject, { where: { id: req.params.id } })
+                        .then(() =>
+                           res.status(200).json({ message: 'Post modifié' })
+                        )
+                        .catch((error) => res.status(401).json({ error }))
+                  })
+               } else {
+                  Posts.update(postObject, { where: { id: req.params.id } })
+                     .then(() =>
+                        res.status(200).json({ message: 'Post modifié' })
+                     )
+                     .catch((error) => res.status(401).json({ error }))
+               }
+            } else {
+               res.status(401).json({ message: 'Opération non-autorisé' })
+            }
+         })
+         .catch((error) => res.status(400).json({ error }))
+   } else {
+      Posts.findByPk(req.params.id)
+         .then((post) => {
+            if (post.userId == req.auth.userId) {
+               console.log(req.body)
 
-                } else {
-                    res.status(401).json({ message: 'Opération non-autorisé' })
-                }
-            })
-            .catch(error => res.status(400).json({ error }));
+               if (req.body.cancelImg === 'true') {
+                  postObject.imageUrl = null
 
-    } else {
-        
-        Posts.findByPk( req.params.id )
-            .then(post => {
-                if (post.userId == req.auth.userId) { console.log(req.body)
-
-                    if (req.body.cancelImg==='true') {
-                        postObject.imageUrl = null
-
-                        const filename = post.imageUrl.split('/images/')[1];
-                    fs.unlink(`images/${filename}`, () => {
-                        Posts.update(postObject, {where: {id: req.params.id}})
-                        .then(() => res.status(200).json({ message: 'Post modifié' }))
-                        .catch(error => res.status(401).json({ error }))
-                    });
-
-                    }else{
-
-                    Posts.update(postObject, {where: {id: req.params.id}})
-                    .then(() => res.status(200).json({ message: 'Post modifié' }))
-                    .catch(error => res.status(401).json({ error }))
-
-                }
-                } else {
-                    res.status(401).json({ message: 'Opération non-autorisé' })
-                }
-            })
-            .catch(error => res.status(400).json({ error }));
-
-    }
-};
+                  const filename = post.imageUrl.split('/images/')[1]
+                  fs.unlink(`images/${filename}`, () => {
+                     Posts.update(postObject, { where: { id: req.params.id } })
+                        .then(() =>
+                           res.status(200).json({ message: 'Post modifié' })
+                        )
+                        .catch((error) => res.status(401).json({ error }))
+                  })
+               } else {
+                  Posts.update(postObject, { where: { id: req.params.id } })
+                     .then(() =>
+                        res.status(200).json({ message: 'Post modifié' })
+                     )
+                     .catch((error) => res.status(401).json({ error }))
+               }
+            } else {
+               res.status(401).json({ message: 'Opération non-autorisé' })
+            }
+         })
+         .catch((error) => res.status(400).json({ error }))
+   }
+}
 
 exports.deletePosts = (req, res, next) => {
-
-    Posts.findByPk( req.params.id )
-        .then((post) => { console.log(req.auth.userId, post.userId)
-            if (post.userId == req.auth.userId) {
-                if (post.imageUrl === '' || !post.imageUrl) {
-                    Posts.destroy( { where :{ id: req.params.id }})
-                        .then(() => res.status(200).json({ message: 'Post supprimé' }))
-                        .catch(error => res.status(400).json({ error }));
-                } else {
-                    const filename = post.imageUrl.split('/images/')[1]
-                    fs.unlink(`images/${filename}`, () => {
-                    Posts.destroy( { where :{ id: req.params.id }})
-                        .then(() => res.status(200).json({ message: 'Post supprimé' }))
-                        .catch(error => res.status(400).json({ error }));
-                })}
-                
+   Posts.findByPk(req.params.id)
+      .then((post) => {
+         console.log(req.auth.userId, post.userId)
+         if (post.userId == req.auth.userId) {
+            if (post.imageUrl === '' || !post.imageUrl) {
+               Posts.destroy({ where: { id: req.params.id } })
+                  .then(() =>
+                     res.status(200).json({ message: 'Post supprimé' })
+                  )
+                  .catch((error) => res.status(400).json({ error }))
             } else {
-                res.status(500).json({ message: 'Opération non-autorisé' })
+               const filename = post.imageUrl.split('/images/')[1]
+               fs.unlink(`images/${filename}`, () => {
+                  Posts.destroy({ where: { id: req.params.id } })
+                     .then(() =>
+                        res.status(200).json({ message: 'Post supprimé' })
+                     )
+                     .catch((error) => res.status(400).json({ error }))
+               })
             }
-        })
-        .catch(error => res.status(400).json({ error }));
-};
-
-const likePost = (object, req, res, next) => {
-    Posts.updateOne({ _id: req.params.id }, { $set: { ...object } })
-        .then(() => {
-            res.status(201).json({ message: 'Like modifié' })
-        })
-        .catch(error => res.status(400).json({ error }));
+         } else {
+            res.status(500).json({ message: 'Opération non-autorisé' })
+         }
+      })
+      .catch((error) => res.status(400).json({ error }))
 }
 
 exports.addLikeToAPost = (req, res, next) => {
-    Posts.findOne({ _id: req.params.id })
-        .then(post => {
-            const postObject = post;
-
-            if ((req.body.like === 1 || req.body.like === -1) && (postObject.usersLiked.includes(req.auth.userId) || postObject.usersDisliked.includes(req.auth.userId))) {
-                res.status(400).json({ message: "Opération non-authorisé" })
+   Likes.findOne({ where: { postId: req.params.id, userId: req.auth.userId } })
+      .then((like) => {
+         if (!like) {
+            const newLike = {
+               userId: req.auth.userId,
+               postId: req.params.id,
             }
+            Likes.create(newLike)
+               .then(() => {
+                  Likes.findAll({ where: { postId: req.params.id } }).then(
+                     (allLikes) => {
+                        Posts.update(
+                           { likes: allLikes.length },
+                           { where: { id: req.params.id } }
+                        )
+                           .then(() =>
+                              res.status(200).json({ message: 'Like retiré' })
+                           )
+                           .catch(() =>
+                              res.status(400).json({
+                                 error,
+                                 message:
+                                    'erreur à la suppression du like éxistant dans la tables Posts',
+                              })
+                           )
+                     }
+                  )
+               })
+               .catch((error) => res.status(400).json({ error }))
+         } else {
+            Likes.destroy({
+               where: { postId: req.params.id, userId: req.auth.userId },
+            })
+               .then(() => {
+                  Likes.findAll({ where: { postId: req.params.id } }).then(
+                     (allLikes) => {
+                        Posts.update(
+                           { likes: allLikes.length },
+                           { where: { id: req.params.id } }
+                        )
+                           .then(() =>
+                              res.status(200).json({ message: 'Like retiré' })
+                           )
+                           .catch(() =>
+                              res.status(400).json({
+                                 error,
+                                 message:
+                                    'erreur à la suppression du like éxistant dans la tables Posts',
+                              })
+                           )
+                     }
+                  )
+               })
+               .catch(() =>
+                  res.status(400).json({
+                     error,
+                     message:
+                        'erreur à la suppression du like éxistant dans la tables Likes',
+                  })
+               )
+         }
+      })
+      .catch(() => res.status(400).json({ error }))
+}
 
-            else if (req.body.like === 1) {
-                postObject.usersLiked.push(req.auth.userId);
-                postObject.likes++;
-                likePost(postObject, req, res, next);
-
-            } else if (req.body.like === -1) {
-                postObject.usersDisliked.push(req.auth.userId);
-                postObject.dislikes++;
-                likePost(postObject, req, res, next);
-
-            } else if (req.body.like === 0) {
-                const userIndexInLikes = postObject.usersLiked.indexOf(req.auth.userId)
-                const userIndexInDislikes = postObject.usersDisliked.indexOf(req.auth.userId)
-
-                if (userIndexInLikes > -1) {
-                    postObject.usersLiked.splice(userIndexInLikes, 1);
-                    postObject.likes--;
-                    likePost(postObject, req, res, next);
-                } else if (userIndexInDislikes > -1) {
-                    postObject.usersDisliked.splice(userIndexInDislikes, 1);
-                    postObject.dislikes--;
-                    likePost(postObject, req, res, next);
-                } else {
-                    res.status(400).json({ message: "Erreur inconnu" })
-                }
-            } else {
-                res.status(400).json({ message: "Valeur innatendu" })
-            }
-        })
-        .catch(error => res.status(400).json({ error }));
-};
-
+exports.checkForLike = (req, res, next) => {
+   Likes.findOne({ where: { postId: req.params.id, userId: req.auth.userId } })
+      .then((like) => {
+         if (like) {
+            return res.status(201).json({ yourLike: true })
+         } else {
+            return res.status(404).json({ yourLike: false })
+         }
+      })
+      .catch((error) => res.status(404).json({ error }))
+}

@@ -18,6 +18,9 @@ db.sequelize = sequelize;
 
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.posts = require("./post.model.js")(sequelize, Sequelize);
+db.likes = require("./like.model.js")(sequelize, Sequelize);
+
+db.posts.belongsToMany(db.users, { through: db.likes})
 
 
 module.exports = db;

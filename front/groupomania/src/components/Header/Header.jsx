@@ -1,6 +1,7 @@
 import './Header.css'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo-blanc-sans-texte.png'
+import fullLogo from '../../assets/icon-left-font-monochrome-white.png'
 import { useState } from 'react'
 import newPostBtn from '../../assets/new-post-btn.png'
 import { useNavigate } from 'react-router-dom'
@@ -29,7 +30,8 @@ function Header({ newPost, setNewPost, activeUser }) {
    return (
       <div id="header" className={header ? 'header header-hide' : 'header'}>
          <Link to={'/home/'} className="header__logo header__left">
-            <img src={logo} alt="Groupomania" />
+            <img src={logo} alt="Groupomania" className="mini-logo" />
+            <img src={fullLogo} alt="Groupomania" className="full-logo" />
          </Link>
          <button
             className="header__mid set-new-post-btn"

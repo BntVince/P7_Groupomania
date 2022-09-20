@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React from 'react'
+import { useEffect } from 'react'
 import { useState } from 'react'
 import NewPost from '../NewPost/NewPost'
 import './Post.css'
@@ -16,10 +17,24 @@ function Post({
    setUpdate,
 }) {
    const [editPost, setEditPost] = useState(false)
+   const [yourLike, setYourLike] = useState(false)
 
    function handleDelete() {
       axios.delete(`/posts/${id}`).then(setUpdate(true))
    }
+
+   function handleLike() {
+      axios.post(`/posts/${id}/like`).then(() => setUpdate(true))
+   }
+
+   useEffect(() => {
+      axios
+         .get(`/posts/${id}/checklike`)
+         .then((res) => {
+            res.data.yourLike ? setYourLike(true) : setYourLike(false)
+         })
+         .catch(() => setYourLike(false))
+   }, [likes])
 
    return (
       <div>
@@ -72,7 +87,14 @@ function Post({
 
                <div className="post__interact">
                   <button className="btn--like btn">
-                     <i className="fa-solid fa-heart"></i>
+                     <i
+                        className={
+                           yourLike
+                              ? 'fa-solid fa-heart'
+                              : 'fa-solid fa-heart reverse'
+                        }
+                        onClick={handleLike}
+                     ></i>
                   </button>
                   <span className="likeNumber"> {likes} </span>
                </div>

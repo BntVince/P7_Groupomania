@@ -41,6 +41,13 @@ function Home() {
    }, [navigate])
 
    useEffect(() => {
+      axios
+         .get('/posts')
+         .then((posts) => {
+            setAllPosts(posts.data)
+            setUpdate(false)
+         })
+         .catch((error) => console.log(error))
       setTimeout(() => {
          axios
             .get('/posts')
@@ -70,32 +77,35 @@ function Home() {
                   setUpdate={setUpdate}
                />
             )}
-            {allPosts.map(
-               ({
-                  description,
-                  imageUrl,
-                  userId,
-                  likes,
-                  id,
-                  publisherName,
-                  publisherImg,
-               }) => (
-                  <li key={id} className="post">
-                     <Post
-                        id={id}
-                        description={description}
-                        imageUrl={imageUrl}
-                        userId={userId}
-                        likes={likes}
-                        publisherName={publisherName}
-                        publisherImg={publisherImg}
-                        activeUser={activeUser}
-                        activeToken={activeToken}
-                        setUpdate={setUpdate}
-                     />
-                  </li>
-               )
-            )}
+            {allPosts
+               .slice(0)
+               .reverse()
+               .map(
+                  ({
+                     description,
+                     imageUrl,
+                     userId,
+                     likes,
+                     id,
+                     publisherName,
+                     publisherImg,
+                  }) => (
+                     <li key={id} className="post">
+                        <Post
+                           id={id}
+                           description={description}
+                           imageUrl={imageUrl}
+                           userId={userId}
+                           likes={likes}
+                           publisherName={publisherName}
+                           publisherImg={publisherImg}
+                           activeUser={activeUser}
+                           activeToken={activeToken}
+                           setUpdate={setUpdate}
+                        />
+                     </li>
+                  )
+               )}
          </ul>
 
          <Footer />

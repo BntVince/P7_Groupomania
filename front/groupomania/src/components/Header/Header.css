@@ -60,3 +60,19 @@
 .header__right .edit-menu{
     top: 1.5rem;
 }
+
+.full-logo{
+    display: none;
+}
+
+@media screen and (min-width: 650px)
+{
+    .mini-logo{
+        display: none;
+    }
+    .full-logo{
+        display: block;
+        height: 17em;
+        align-self: center;
+    }
+}
