@@ -15,6 +15,7 @@ function NewPost({
    description,
    imageUrl,
    setUpdate,
+   i,
 }) {
    const [scHeight, setScHeight] = useState(52)
    const textarea = document.querySelector('textarea')
@@ -42,6 +43,7 @@ function NewPost({
       }
       const fileURL = URL.createObjectURL(file)
       setPreview(fileURL)
+      setCancelImg(false)
    }, [file])
 
    function cancelImg() {
@@ -70,28 +72,45 @@ function NewPost({
             if (file) {
                newPostData.append('image', file, file.name)
 
-               axios.post('/posts', newPostData).then((res) => console.log(res))
-               setNewPost(false)
-               setUpdate(true)
+               axios.post('/posts', newPostData).then((res) => {
+                  setNewPost(false)
+                  setUpdate({
+                     new: true,
+                     postToAdd: res.data.postToAdd,
+                  })
+               })
             } else {
-               axios.post('/posts', newPostData)
-               setNewPost(false)
-               setUpdate(true)
+               axios.post('/posts', newPostData).then((res) => {
+                  setNewPost(false)
+                  setUpdate({
+                     new: true,
+                     postToAdd: res.data.postToAdd,
+                  })
+               })
             }
          } else {
             if (file) {
                newPostData.append('image', file, file.name)
 
-               axios
-                  .put(`/posts/${id}`, newPostData)
-                  .then((res) => console.log(res))
-               setEditPost(false)
-               setUpdate(true)
+               axios.put(`/posts/${id}`, newPostData).then((res) => {
+                  console.log(res.data.updatedPost)
+                  setEditPost(false)
+                  setUpdate({
+                     edit: true,
+                     i: i,
+                     updatedPost: res.data.updatedPost,
+                  })
+               })
             } else {
                newPostData.append('cancelImg', cancelImgToSend)
-               axios.put(`/posts/${id}`, newPostData)
-               setEditPost(false)
-               setUpdate(true)
+               axios.put(`/posts/${id}`, newPostData).then((res) => {
+                  setEditPost(false)
+                  setUpdate({
+                     edit: true,
+                     i: i,
+                     updatedPost: res.data.updatedPost,
+                  })
+               })
             }
          }
       }

@@ -17,11 +17,14 @@ function Home() {
    )
    const [activeUser, setActiveUser] = useState({})
    const [allPosts, setAllPosts] = useState([])
-   const [update, setUpdate] = useState(false)
+   const [update, setUpdate] = useState({})
+   const [likesArray, setLikesArray] = useState([])
 
    axios.defaults.headers.common = { Authorization: `Bearer ${activeToken}` }
    axios.defaults.baseURL = 'http://localhost:3001/api'
+
    useEffect(() => {
+      // ------------CHECK---------------
       axios
          .get('/auth/check')
          .then((res, error) => {
@@ -38,25 +41,39 @@ function Home() {
             setActiveToken('')
             navigate('/')
          })
-   }, [navigate])
+   }, [])
 
    useEffect(() => {
+      // ----------------ALLPOSTS----------------
       axios
          .get('/posts')
-         .then((posts) => {
-            setAllPosts(posts.data)
-            setUpdate(false)
+         .then((res) => {
+            setAllPosts(res.data.posts.slice(0).reverse())
+            setLikesArray(res.data.likesArray)
          })
          .catch((error) => console.log(error))
-      setTimeout(() => {
-         axios
-            .get('/posts')
-            .then((posts) => {
-               setAllPosts(posts.data)
-               setUpdate(false)
-            })
-            .catch((error) => console.log(error))
-      }, 2000)
+   }, [])
+
+   useEffect(() => {
+      // ---------------UPDATE----------------
+      if (update.delete) {
+         let currentAllPosts = allPosts
+         currentAllPosts.splice(update.i, 1)
+         setAllPosts(currentAllPosts)
+         setUpdate({})
+      } else if (update.edit) {
+         let currentAllPosts = allPosts
+         let postToEdit = update.updatedPost
+         currentAllPosts[update.i] = postToEdit
+         setAllPosts(currentAllPosts)
+         setUpdate({})
+      } else if (update.new) {
+         let currentAllPosts = allPosts
+         let postToAdd = update.postToAdd
+         currentAllPosts.unshift(postToAdd)
+         setAllPosts(currentAllPosts)
+         setUpdate({})
+      }
    }, [update])
 
    return (
@@ -77,11 +94,9 @@ function Home() {
                   setUpdate={setUpdate}
                />
             )}
-            {allPosts
-               .slice(0)
-               .reverse()
-               .map(
-                  ({
+            {allPosts.map(
+               (
+                  {
                      description,
                      imageUrl,
                      userId,
@@ -89,23 +104,27 @@ function Home() {
                      id,
                      publisherName,
                      publisherImg,
-                  }) => (
-                     <li key={id} className="post">
-                        <Post
-                           id={id}
-                           description={description}
-                           imageUrl={imageUrl}
-                           userId={userId}
-                           likes={likes}
-                           publisherName={publisherName}
-                           publisherImg={publisherImg}
-                           activeUser={activeUser}
-                           activeToken={activeToken}
-                           setUpdate={setUpdate}
-                        />
-                     </li>
-                  )
-               )}
+                  },
+                  i
+               ) => (
+                  <li key={id} className="post">
+                     <Post
+                        id={id}
+                        description={description}
+                        imageUrl={imageUrl}
+                        userId={userId}
+                        likes={likes}
+                        publisherName={publisherName}
+                        publisherImg={publisherImg}
+                        activeUser={activeUser}
+                        activeToken={activeToken}
+                        setUpdate={setUpdate}
+                        i={i}
+                        likesArray={likesArray}
+                     />
+                  </li>
+               )
+            )}
          </ul>
 
          <Footer />

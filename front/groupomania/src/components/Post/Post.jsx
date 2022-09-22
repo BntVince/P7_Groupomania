@@ -15,26 +15,42 @@ function Post({
    publisherImg,
    activeUser,
    setUpdate,
+   i,
+   likesArray,
 }) {
    const [editPost, setEditPost] = useState(false)
    const [yourLike, setYourLike] = useState(false)
+   const [zoomImg, setZoomImg] = useState(false)
+   const [currentLike, setCurrentLike] = useState(likes)
+
+   useEffect(() => {
+      if (likesArray.some((e) => e.postId === id)) {
+         setYourLike(true)
+      }
+   }, [])
 
    function handleDelete() {
-      axios.delete(`/posts/${id}`).then(setUpdate(true))
+      axios.delete(`/posts/${id}`).then(setUpdate({ delete: true, i: i }))
    }
 
    function handleLike() {
-      axios.post(`/posts/${id}/like`).then(() => setUpdate(true))
+      axios.post(`/posts/${id}/like`).then(() => {
+         let likes = currentLike
+         if (yourLike) {
+            likes--
+            setCurrentLike(likes)
+            setYourLike(false)
+         } else {
+            likes++
+            setCurrentLike(likes)
+            setYourLike(true)
+         }
+      })
    }
 
-   useEffect(() => {
-      axios
-         .get(`/posts/${id}/checklike`)
-         .then((res) => {
-            res.data.yourLike ? setYourLike(true) : setYourLike(false)
-         })
-         .catch(() => setYourLike(false))
-   }, [likes])
+   function handleZoom() {
+      zoomImg ? setZoomImg(false) : setZoomImg(true)
+   }
 
    return (
       <div>
@@ -47,6 +63,7 @@ function Post({
                description={description}
                imageUrl={imageUrl}
                setUpdate={setUpdate}
+               i={i}
             />
          ) : (
             <div className="post-container">
@@ -81,7 +98,7 @@ function Post({
                   </div>
                   <div className="post__body__descr">
                      <span>{description}</span>
-                     <img src={imageUrl} alt="" />
+                     <img src={imageUrl} alt="" onClick={handleZoom} />
                   </div>
                </div>
 
@@ -96,7 +113,7 @@ function Post({
                         onClick={handleLike}
                      ></i>
                   </button>
-                  <span className="likeNumber"> {likes} </span>
+                  <span className="likeNumber"> {currentLike} </span>
                </div>
             </div>
          )}
