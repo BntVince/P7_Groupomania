@@ -6,7 +6,7 @@ import './utils/style/index.css'
 
 import Home from './pages/Home/Home'
 import Login from './pages/Login/Login'
-import Profile from './pages/Profile/Profile'
+import Profil from './pages/Profil/Profil'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
@@ -15,7 +15,7 @@ root.render(
          <Routes>
             <Route path="*" element={<Login />} />
             <Route path="home" element={<Home />} />
-            <Route path="profile/:userId" element={<Profile />} />
+            <Route path="profil/:profilId" element={<Profil />} />
          </Routes>
       </BrowserRouter>
    </React.StrictMode>

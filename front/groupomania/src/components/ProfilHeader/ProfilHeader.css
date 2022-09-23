@@ -1,0 +1,18 @@
+.profil-header{
+    background-color: rgb(200, 200, 200);
+    justify-content: space-between;
+    align-items: center;
+    height: 6em;
+    padding-inline: 1em;
+}
+.profil-header--left{
+    align-items: center;
+    gap: 1em;
+}
+.profil-header--left img  {
+    border-radius: 50%;
+    width: 60px;
+}
+.profil-header--left span{
+    font-size: 1.75rem;
+}

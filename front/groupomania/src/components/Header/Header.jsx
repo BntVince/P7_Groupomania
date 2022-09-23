@@ -6,7 +6,7 @@ import { useState } from 'react'
 import newPostBtn from '../../assets/new-post-btn.png'
 import { useNavigate } from 'react-router-dom'
 
-function Header({ newPost, setNewPost, activeUser }) {
+function Header({ newPost, setNewPost, activeUser, home }) {
    const navigate = useNavigate()
    const [header, setHeader] = useState(false)
    const [oldScroll, setOldScroll] = useState(0)
@@ -33,20 +33,29 @@ function Header({ newPost, setNewPost, activeUser }) {
             <img src={logo} alt="Groupomania" className="mini-logo" />
             <img src={fullLogo} alt="Groupomania" className="full-logo" />
          </Link>
-         <button
-            className="header__mid set-new-post-btn"
-            onClick={() => {
-               setNewPost(true)
-            }}
-         >
-            <img src={newPostBtn} alt="" />
-         </button>
+         {home ? (
+            <button
+               className="header__mid set-new-post-btn"
+               onClick={() => {
+                  setNewPost(true)
+               }}
+            >
+               <img src={newPostBtn} alt="" />
+            </button>
+         ) : null}
+
          <div className="header__right">
             <p className="username">{activeUser.userName}</p>
-            <img src={activeUser.profilImg} alt="" className="image-profile" />
+            <img src={activeUser.profilImg} alt="" className="image-profil" />
             <div className="edit">
                <ul className="edit-menu">
-                  <li className="edit-menu__choice">Editer</li>
+                  <li className="edit-menu__choice">
+                     {home ? (
+                        <Link to={`/profil/${activeUser.id}`}>Profile</Link>
+                     ) : (
+                        <Link to={`/home/`}>Home</Link>
+                     )}
+                  </li>
                   <li className="edit-menu__choice" onClick={logOut}>
                      Déconexion
                   </li>

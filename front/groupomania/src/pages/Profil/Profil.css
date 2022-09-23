@@ -1,0 +1,18 @@
+.profil-container{
+    min-height: calc(100vh - 8em);
+    display: flex;
+    flex-direction: column;
+}
+
+.profil-container .posts-container{
+    min-height: auto;
+}
+
+.posts-container-header{
+    background-color: rgb(200, 200, 200);
+    padding-block: 0.25em;
+    padding-inline: 1em;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 0.35em;
+}

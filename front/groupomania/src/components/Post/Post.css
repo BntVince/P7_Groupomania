@@ -98,9 +98,9 @@
     list-style: none;
     background-color: var(--dark-color);
     color: white;
-    left: -180%;
-    padding: 0.25em;
-    border-radius: 0.25em;
+    left: -200%;
+    padding: 0.45em;
+    border-radius: 0.5em;
     text-align: center;
 }
 

@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import NewPost from '../NewPost/NewPost'
 import './Post.css'
+import { Link } from 'react-router-dom'
 
 function Post({
    id,
@@ -69,14 +70,17 @@ function Post({
             <div className="post-container">
                <div className="post__body">
                   <div className="post__body__header">
-                     <div className="post__body__header__left">
+                     <Link
+                        to={`/profil/${userId}`}
+                        className="post__body__header__left"
+                     >
                         <img
                            src={publisherImg}
                            alt=""
-                           className="image-profile"
+                           className="image-profil"
                         />
                         <span> {publisherName} </span>
-                     </div>
+                     </Link>
                      {parseInt(userId) === activeUser.id && (
                         <div className="fa-solid fa-ellipsis-vertical edit">
                            <ul className="edit-menu">

@@ -49,3 +49,17 @@ body {
 .image-profile {
     border-radius: 50%;
 }
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+.flex{
+    display: flex;
+}
+
+.flex-cl{
+    display: flex;
+    flex-direction: column;
+}

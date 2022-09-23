@@ -82,6 +82,7 @@ function Home() {
             newPost={newPost}
             setNewPost={setNewPost}
             activeUser={activeUser}
+            home={true}
          />
 
          <ul className="posts-container">
