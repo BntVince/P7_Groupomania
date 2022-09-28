@@ -7,7 +7,11 @@ function ProfilHeader({ profilUser, activeUser, editProfil, setEditProfil }) {
    return (
       <div className="profil-header flex">
          <div className="profil-header--left flex">
-            <img src={profilUser.profilImg} alt="profil" />
+            <img
+               src={profilUser.profilImg}
+               alt="profil"
+               className="image-profil"
+            />
             <span>{profilUser.userName}</span>
          </div>
          {activeUser.id === profilUser.id &&

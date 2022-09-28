@@ -63,3 +63,10 @@ a{
     display: flex;
     flex-direction: column;
 }
+
+.image-profil{
+    border-radius: 50%;
+    object-fit: cover;
+    
+    aspect-ratio: 1/1;
+}

@@ -23,6 +23,7 @@
 
 .post__body__header__left{
     display: flex;
+    gap: .5em;
 }
 
 .post__body__header span {

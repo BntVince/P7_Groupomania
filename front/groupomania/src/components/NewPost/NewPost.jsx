@@ -124,7 +124,7 @@ function NewPost({
                   <img
                      src={activeUser.profilImg}
                      alt=""
-                     className="image-profile"
+                     className="image-profil"
                   />
                   <span> {activeUser.userName} </span>
                </div>

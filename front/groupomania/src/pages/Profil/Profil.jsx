@@ -109,7 +109,13 @@ function Profil() {
             />
 
             {editProfil ? (
-               <EditProfil profilUser={profilUser} />
+               <EditProfil
+                  profilUser={profilUser}
+                  setActiveUser={setActiveUser}
+                  activeUser={activeUser}
+                  setProfilUser={setProfilUser}
+                  setEditProfil={setEditProfil}
+               />
             ) : (
                <ul className="posts-container">
                   <span className="posts-container-header">

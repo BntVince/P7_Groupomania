@@ -2,6 +2,8 @@ const db = require('../models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = db.users
+const Posts = db.posts
+const fs = require('fs')
 
 exports.signup = (req, res, next) => {
    bcrypt
@@ -73,3 +75,105 @@ exports.getProfil = (req, res, next) => {
       })
       .catch((error) => res.status(500).json({ error }))
 }
+
+exports.softModifyProfil = (req, res, next) => {
+   let newUserData = { userName: req.body.userName }
+   if (req.file) {
+      newUserData.profilImg = `${req.protocol}://${req.get('host')}/images/${
+         req.file.filename
+      }`
+
+      User.findByPk(req.params.id)
+         .then((user) => {
+            if (user.id == req.auth.userId) {
+               if (
+                  user.profilImg ===
+                  `${req.protocol}://${req.get('host')}/images/default.png`
+               ) {
+                  User.update(newUserData, { where: { id: req.auth.userId } })
+                     .then(() => {
+                        console.log('ici')
+                        const updatedProfil = {
+                           ...newUserData,
+                        }
+                        Posts.update(
+                           {
+                              publisherName: newUserData.userName,
+                              publisherImg: newUserData.profilImg,
+                           },
+                           { where: { userId: req.auth.userId } }
+                        )
+                           .then(() =>
+                              res.status(201).json({
+                                 message: 'Utilisateur modifié',
+                                 updatedProfil: updatedProfil,
+                              })
+                           )
+                           .catch((error) => res.status(400).json({ error }))
+                     })
+                     .catch((error) => res.status(400).json({ error }))
+               } else {
+                  const filename = user.profilImg.split('/images/')[1]
+                  fs.unlink(`images/${filename}`, () => {
+                     User.update(newUserData, {
+                        where: { id: req.auth.userId },
+                     })
+                        .then(() => {
+                           const updatedProfil = {
+                              ...newUserData,
+                           }
+                           Posts.update(
+                              {
+                                 publisherName: newUserData.userName,
+                                 publisherImg: newUserData.profilImg,
+                              },
+                              { where: { userId: req.auth.userId } }
+                           )
+                              .then(() =>
+                                 res.status(201).json({
+                                    message: 'Utilisateur modifié',
+                                    updatedProfil: updatedProfil,
+                                 })
+                              )
+                              .catch((error) => res.status(400).json({ error }))
+                        })
+                        .catch((error) => res.status(400).json({ error }))
+                  })
+               }
+            } else {
+               return res.status(400).json({ error })
+            }
+         })
+         .catch((error) => res.status(400).json({ error }))
+   } else {
+      User.findByPk(req.params.id)
+         .then((user) => {
+            if (user.id == req.auth.userId) {
+               User.update(newUserData, { where: { id: req.auth.userId } })
+                  .then(() => {
+                     const updatedProfil = {
+                        ...newUserData,
+                        profilImg: user.profilImg,
+                     }
+                     Posts.update(
+                        { publisherName: newUserData.userName },
+                        { where: { userId: req.auth.userId } }
+                     )
+                        .then(() =>
+                           res.status(201).json({
+                              message: 'Utilisateur modifié',
+                              updatedProfil: updatedProfil,
+                           })
+                        )
+                        .catch((error) => res.status(400).json({ error }))
+                  })
+                  .catch((error) => res.status(400).json({ error }))
+            } else {
+               return res.status(400).json({ error })
+            }
+         })
+         .catch((error) => res.status(400).json({ error }))
+   }
+}
+
+exports.hardModifyProfil = (req, res, next) => {}

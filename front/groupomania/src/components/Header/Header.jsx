@@ -46,7 +46,11 @@ function Header({ newPost, setNewPost, activeUser, home }) {
 
          <div className="header__right">
             <p className="username">{activeUser.userName}</p>
-            <img src={activeUser.profilImg} alt="" className="image-profil" />
+            <img
+               src={activeUser.profilImg}
+               alt=""
+               className="image-profil profil-img"
+            />
             <div className="edit">
                <ul className="edit-menu">
                   <li className="edit-menu__choice">
