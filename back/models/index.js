@@ -20,6 +20,9 @@ db.posts = require('./post.model.js')(sequelize, Sequelize)
 db.likes = require('./like.model.js')(sequelize, Sequelize)
 
 db.posts.belongsToMany(db.users, { through: db.likes })
-db.users.hasOne(db.posts)
+db.users.hasOne(db.posts, {
+   onDelete: 'CASCADE',
+})
+db.posts.belongsTo(db.users)
 
 module.exports = db

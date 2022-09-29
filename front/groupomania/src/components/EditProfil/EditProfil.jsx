@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import './EditProfil.css'
 import cancelNewPost from '../../assets/cancel-new-post.png'
 import axios from 'axios'
+import DeleteAlert from '../DeleteAlert/DeleteAlert'
 
 function EditProfil({
    profilUser,
@@ -17,7 +18,8 @@ function EditProfil({
    const [userName, setUserName] = useState(profilUser.userName)
    const [email, setEmail] = useState('')
    const [newPassword, setNewPassword] = useState('')
-   const [oldPassword, setOldPassword] = useState('')
+   const [currentPassword, setCurrentPassword] = useState('')
+   const [deleteAlert, setDeleteAlert] = useState(false)
 
    function cancelImg() {
       setFile(null)
@@ -33,38 +35,54 @@ function EditProfil({
       setPreview(fileURL)
    }, [file])
 
-   const submitSoftChange = (e) => {
+   const submitProfilChange = (e) => {
       e.preventDefault()
-      if (!file && (userName === '' || userName === profilUser.userName)) {
-         alert("Vous n'avez saisie aucune modification à envoyer")
-      } else if (softEditProfil) {
-         const userData = new FormData()
-         userName === '' && setUserName(profilUser.userName)
-         userData.append('userName', userName)
-         if (file) {
-            userData.append('image', file, file.name)
+      if (softEditProfil) {
+         if (!file && (userName === '' || userName === profilUser.userName)) {
+            alert("Vous n'avez saisie aucune modification à envoyer")
+         } else {
+            const userData = new FormData()
+            userName === '' && setUserName(profilUser.userName)
+            userData.append('userName', userName)
+            if (file) {
+               userData.append('image', file, file.name)
+            }
+            axios.put(`/auth/${profilUser.id}/soft`, userData).then((res) => {
+               console.log(res)
+               setActiveUser({
+                  ...activeUser,
+                  userName: res.data.updatedProfil.userName,
+                  profilImg: res.data.updatedProfil.profilImg,
+               })
+               setProfilUser({
+                  ...profilUser,
+                  userName: res.data.updatedProfil.userName,
+                  profilImg: res.data.updatedProfil.profilImg,
+               })
+               setEditProfil(false)
+            })
          }
-         axios.put(`/auth/${profilUser.id}/soft`, userData).then((res) => {
-            console.log(res)
-            setActiveUser({
-               ...activeUser,
-               userName: res.data.updatedProfil.userName,
-               profilImg: res.data.updatedProfil.profilImg,
-            })
-            setProfilUser({
-               ...profilUser,
-               userName: res.data.updatedProfil.userName,
-               profilImg: res.data.updatedProfil.profilImg,
-            })
-            setEditProfil(false)
-         })
+      } else {
+         if (email === '' && newPassword === '') {
+            alert("Vous n'avez saisie aucune modification à envoyer")
+         } else if (currentPassword === '') {
+            alert(
+               'Nous avons besoin de votre ancien mot de passe pour procéder à ces changement'
+            )
+         } else {
+            const userData = {}
+            userData.email = email
+            userData.newPassword = newPassword
+            userData.currentPassword = currentPassword
+            axios.put(`/auth/${profilUser.id}/hard`, userData)
+         }
       }
    }
 
    return (
       <div className="flex-cl form-container">
          {softEditProfil ? (
-            <form className="form-profil flex-cl" onSubmit={submitSoftChange}>
+            <form className="form-profil flex-cl" onSubmit={submitProfilChange}>
                <div className="form-profil-img flex">
                   <input
                      type="file"
@@ -109,7 +127,7 @@ function EditProfil({
                </button>
             </form>
          ) : (
-            <form className="form-profil flex-cl">
+            <form className="form-profil flex-cl" onSubmit={submitProfilChange}>
                <input
                   type="email"
                   name="email"
@@ -132,7 +150,7 @@ function EditProfil({
                   id="password"
                   className="form-profil-username"
                   placeholder="Ancien mot de passe"
-                  onChange={(e) => setOldPassword(e.target.value)}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                />
                <span>
                   Les modifications des identifiants de connexion requièrent
@@ -160,7 +178,18 @@ function EditProfil({
                   Modifier le profil
                </button>
             )}
-            <button className="btn delete-btn">Supprimer le compte</button>
+            {deleteAlert && (
+               <DeleteAlert
+                  setDeleteAlert={setDeleteAlert}
+                  activeUser={activeUser}
+               />
+            )}
+            <button
+               className="btn delete-btn"
+               onClick={() => setDeleteAlert(true)}
+            >
+               Supprimer le compte
+            </button>
          </div>
       </div>
    )

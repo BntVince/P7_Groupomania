@@ -1,0 +1,30 @@
+.alert{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(80, 80, 80, 0.527);
+    top: 0;
+    justify-content: center;
+    align-items: center;
+}
+.alert-container{
+    background-color: rgb(238, 235, 235);
+    padding: 1.5em;
+    padding-top: .75em;
+    border-radius: 1em;
+    text-align: center;
+    width: 350px;
+}
+
+.alert-header{
+    margin-bottom: .5em;
+    justify-content: flex-end;
+}
+
+.alert-body{
+    gap: 0.75em;
+}
+
+.alert-body input{
+    width: auto;
+}

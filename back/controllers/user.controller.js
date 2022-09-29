@@ -176,4 +176,88 @@ exports.softModifyProfil = (req, res, next) => {
    }
 }
 
-exports.hardModifyProfil = (req, res, next) => {}
+exports.checkPassword = (req, res, next) => {
+   if (req.params.id != req.auth.userId) {
+      return res.status(500).json({ message: 'Opération non autorisé' })
+   } else {
+      User.findByPk(req.params.id).then((user) => {
+         bcrypt
+            .compare(req.body.currentPassword, user.password)
+            .then((valid) => {
+               if (!valid) {
+                  return res.status(500).json({
+                     message: 'Opération non autorisé',
+                  })
+               } else {
+                  next()
+               }
+            })
+            .catch((error) => res.status(401).json({ error }))
+      })
+   }
+}
+
+exports.hardModifyProfil = (req, res, next) => {
+   User.findByPk(req.params.id)
+      .then((user) => {
+         if (req.auth.userId != user.id) {
+            return res.status(500).json({ message: 'Opération non autorisé' })
+         } else {
+            const newUserData = {}
+            if (req.body.email && req.newPassword) {
+               console.log(
+                  'email',
+                  req.body.email,
+                  '+ password',
+                  req.newPassword
+               )
+               bcrypt
+                  .hash(req.body.newPassword, 10)
+                  .then((hash) => {
+                     newUserData.password = hash
+                     newUserData.email = req.body.email
+                     User.update(newUserData, { where: { id: req.params.id } })
+                        .then(() =>
+                           res
+                              .status(201)
+                              .json({ message: 'Données modifiées!' })
+                        )
+                        .catch((error) => res.status(401).json({ error }))
+                  })
+                  .catch((error) => res.status(500).json({ error }))
+            } else if (req.body.newPassword) {
+               console.log('password')
+               bcrypt
+                  .hash(req.body.newPassword, 10)
+                  .then((hash) => {
+                     newUserData.password = hash
+                     User.update(newUserData, { where: { id: req.params.id } })
+                        .then(() =>
+                           res
+                              .status(201)
+                              .json({ message: 'Données modifiées!' })
+                        )
+                        .catch((error) => res.status(401).json({ error }))
+                  })
+                  .catch((error) => res.status(500).json({ error }))
+            } else if (req.body.email) {
+               console.log('email')
+               newUserData.email = req.body.email
+               User.update(newUserData, { where: { id: req.params.id } })
+                  .then(() =>
+                     res.status(201).json({ message: 'Données modifiées!' })
+                  )
+                  .catch((error) => res.status(401).json({ error }))
+            } else {
+               return res.status(400).json({ error })
+            }
+         }
+      })
+      .catch((error) => res.status(401).json({ error }))
+}
+
+exports.deleteProfil = (req, res, next) => {
+   User.destroy({ where: { id: req.params.id } })
+      .then(() => res.status(201).json({ message: 'Utilisateur Supprimé' }))
+      .catch((error) => res.status(401).json({ error }))
+}
