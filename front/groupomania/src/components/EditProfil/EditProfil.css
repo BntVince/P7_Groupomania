@@ -21,12 +21,14 @@
     padding-inline: 1.5em;
     padding-block: 0.75em;
 }
-.form-container-footer .delete-btn{
+.delete-btn{
     background-color: #C6573F;
     color: white;
     font-size: 16px;
     padding-inline: 1.5em;
     padding-block: 0.75em;
+    width: fit-content;
+    margin-inline: auto;
 }
 .form-profil{
     align-items: center;

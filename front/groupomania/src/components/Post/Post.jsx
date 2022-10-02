@@ -5,6 +5,7 @@ import { useState } from 'react'
 import NewPost from '../NewPost/NewPost'
 import './Post.css'
 import { Link } from 'react-router-dom'
+import defaultProfilImg from '../../assets/default.png'
 
 function Post({
    id,
@@ -12,8 +13,7 @@ function Post({
    imageUrl,
    userId,
    likes,
-   publisherName,
-   publisherImg,
+   user,
    activeUser,
    setUpdate,
    i,
@@ -74,14 +74,24 @@ function Post({
                         to={`/profil/${userId}`}
                         className="post__body__header__left"
                      >
-                        <img
-                           src={publisherImg}
-                           alt=""
-                           className="image-profil"
-                        />
-                        <span> {publisherName} </span>
+                        {user.profilImg ? (
+                           <img
+                              src={user.profilImg}
+                              alt=""
+                              className="image-profil"
+                           />
+                        ) : (
+                           <img
+                              src={defaultProfilImg}
+                              alt=""
+                              className="image-profil"
+                           />
+                        )}
+
+                        <span> {user.userName} </span>
                      </Link>
-                     {parseInt(userId) === activeUser.id && (
+                     {(parseInt(userId) === activeUser.id ||
+                        activeUser.isAdmin) && (
                         <div className="fa-solid fa-ellipsis-vertical edit">
                            <ul className="edit-menu">
                               <li

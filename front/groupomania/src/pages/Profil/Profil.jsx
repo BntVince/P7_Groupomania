@@ -8,6 +8,7 @@ import Footer from '../../components/Footer/Footer'
 import Post from '../../components/Post/Post'
 import './Profil.css'
 import EditProfil from '../../components/EditProfil/EditProfil'
+import DeleteAlert from '../../components/DeleteAlert/DeleteAlert'
 
 function Profil() {
    const navigate = useNavigate()
@@ -23,6 +24,7 @@ function Profil() {
    const [profilUser, setProfilUser] = useState({})
    const [update, setUpdate] = useState({})
    const [editProfil, setEditProfil] = useState(false)
+   const [deleteAlert, setDeleteAlert] = useState(false)
    const { profilId } = useParams()
 
    axios.defaults.headers.common = { Authorization: `Bearer ${activeToken}` }
@@ -115,6 +117,8 @@ function Profil() {
                   activeUser={activeUser}
                   setProfilUser={setProfilUser}
                   setEditProfil={setEditProfil}
+                  deleteAlert={deleteAlert}
+                  setDeleteAlert={setDeleteAlert}
                />
             ) : (
                <ul className="posts-container">
@@ -123,15 +127,7 @@ function Profil() {
                   </span>
                   {allPosts.map(
                      (
-                        {
-                           description,
-                           imageUrl,
-                           userId,
-                           likes,
-                           id,
-                           publisherName,
-                           publisherImg,
-                        },
+                        { description, imageUrl, userId, likes, id, user },
                         i
                      ) => (
                         <li key={id} className="post">
@@ -141,8 +137,7 @@ function Profil() {
                               imageUrl={imageUrl}
                               userId={userId}
                               likes={likes}
-                              publisherName={publisherName}
-                              publisherImg={publisherImg}
+                              user={user}
                               activeUser={activeUser}
                               activeToken={activeToken}
                               setUpdate={setUpdate}
@@ -153,6 +148,20 @@ function Profil() {
                      )
                   )}
                </ul>
+            )}
+            {activeUser.isAdmin && (
+               <button
+                  className="btn delete-btn"
+                  onClick={() => setDeleteAlert(true)}
+               >
+                  Supprimer le compte
+               </button>
+            )}
+            {deleteAlert && (
+               <DeleteAlert
+                  setDeleteAlert={setDeleteAlert}
+                  profilUser={profilUser}
+               />
             )}
          </div>
          <Footer />

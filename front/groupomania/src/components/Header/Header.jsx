@@ -5,6 +5,7 @@ import fullLogo from '../../assets/icon-left-font-monochrome-white.png'
 import { useState } from 'react'
 import newPostBtn from '../../assets/new-post-btn.png'
 import { useNavigate } from 'react-router-dom'
+import defaultProfilImg from '../../assets/default.png'
 
 function Header({ newPost, setNewPost, activeUser, home }) {
    const navigate = useNavigate()
@@ -46,11 +47,20 @@ function Header({ newPost, setNewPost, activeUser, home }) {
 
          <div className="header__right">
             <p className="username">{activeUser.userName}</p>
-            <img
-               src={activeUser.profilImg}
-               alt=""
-               className="image-profil profil-img"
-            />
+            {activeUser.profilImg ? (
+               <img
+                  src={activeUser.profilImg}
+                  alt=""
+                  className="image-profil profil-img"
+               />
+            ) : (
+               <img
+                  src={defaultProfilImg}
+                  alt=""
+                  className="image-profil profil-img"
+               />
+            )}
+
             <div className="edit">
                <ul className="edit-menu">
                   <li className="edit-menu__choice">

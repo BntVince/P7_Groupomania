@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import cancelNewPost from '../../assets/cancel-new-post.png'
 import './DeleteAlert.css'
 
-function DeleteAlert({ setDeleteAlert, activeUser }) {
+function DeleteAlert({ setDeleteAlert, profilUser }) {
    const [password, setPassword] = useState('')
    const navigate = useNavigate()
 
@@ -16,11 +16,14 @@ function DeleteAlert({ setDeleteAlert, activeUser }) {
       } else {
          const userPassword = { currentPassword: password }
          axios
-            .post(`/auth/${activeUser.id}/delete`, userPassword)
+            .post(`/auth/${profilUser.id}/delete`, userPassword)
             .then((res) => {
                if ((res.status = 201)) {
                   navigate('/')
                }
+            })
+            .catch(() => {
+               alert('Le mot de passe de correspond pas')
             })
       }
    }
@@ -40,7 +43,7 @@ function DeleteAlert({ setDeleteAlert, activeUser }) {
                <span>
                   Attention, vous vous apprétez à supprimer votre compte ! Cette
                   action sera définitive et supprimera également tout vos posts
-                  et like associé!
+                  associés!
                </span>
 
                <input

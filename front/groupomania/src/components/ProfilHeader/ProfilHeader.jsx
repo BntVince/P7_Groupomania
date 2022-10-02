@@ -1,17 +1,25 @@
-import React from 'react'
 import './ProfilHeader.css'
 import modifyBtn from '../../assets/modify-btn.png'
 import backBtn from '../../assets/back-btn.png'
+import defaultProfilImg from '../../assets/default.png'
 
 function ProfilHeader({ profilUser, activeUser, editProfil, setEditProfil }) {
    return (
       <div className="profil-header flex">
          <div className="profil-header--left flex">
-            <img
-               src={profilUser.profilImg}
-               alt="profil"
-               className="image-profil"
-            />
+            {profilUser.profilImg ? (
+               <img
+                  src={profilUser.profilImg}
+                  alt="profil"
+                  className="image-profil"
+               />
+            ) : (
+               <img
+                  src={defaultProfilImg}
+                  alt="profil"
+                  className="image-profil"
+               />
+            )}
             <span>{profilUser.userName}</span>
          </div>
          {activeUser.id === profilUser.id &&

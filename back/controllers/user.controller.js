@@ -12,8 +12,8 @@ exports.signup = (req, res, next) => {
          const user = {
             email: req.body.email,
             userName: req.body.userName,
-            profilImg: 'http://localhost:3001/images/default.png',
             password: hash,
+            isAdmin: false,
          }
          User.create(user)
             .then(() =>
@@ -44,7 +44,7 @@ exports.login = (req, res, next) => {
                      return res.status(200).json({
                         userId: user.id,
                         token: jwt.sign(
-                           { userId: user.id },
+                           { userId: user.id, isAdmin: user.isAdmin },
                            process.env.JWT_SECRET,
                            { expiresIn: '24h' }
                         ),
@@ -67,7 +67,9 @@ exports.check = (req, res, next) => {
 
 exports.getProfil = (req, res, next) => {
    User.findByPk(req.params.id, {
-      attributes: { exclude: ['createdAt', 'updatedAt', 'password', 'email'] },
+      attributes: {
+         exclude: ['createdAt', 'updatedAt', 'password', 'email', 'isAdmin'],
+      },
    })
       .then((user) => {
          console.log(user)
@@ -86,31 +88,18 @@ exports.softModifyProfil = (req, res, next) => {
       User.findByPk(req.params.id)
          .then((user) => {
             if (user.id == req.auth.userId) {
-               if (
-                  user.profilImg ===
-                  `${req.protocol}://${req.get('host')}/images/default.png`
-               ) {
+               if (!user.profilImg) {
                   User.update(newUserData, { where: { id: req.auth.userId } })
-                     .then(() => {
-                        console.log('ici')
-                        const updatedProfil = {
-                           ...newUserData,
-                        }
-                        Posts.update(
-                           {
-                              publisherName: newUserData.userName,
-                              publisherImg: newUserData.profilImg,
-                           },
-                           { where: { userId: req.auth.userId } }
-                        )
-                           .then(() =>
-                              res.status(201).json({
-                                 message: 'Utilisateur modifié',
-                                 updatedProfil: updatedProfil,
-                              })
-                           )
+                     .then(() =>
+                        res
+                           .status(201)
+                           .json({
+                              message: 'Utilisateur modifié',
+                              updatedProfil: newUserData,
+                           })
+
                            .catch((error) => res.status(400).json({ error }))
-                     })
+                     )
                      .catch((error) => res.status(400).json({ error }))
                } else {
                   const filename = user.profilImg.split('/images/')[1]
@@ -118,25 +107,12 @@ exports.softModifyProfil = (req, res, next) => {
                      User.update(newUserData, {
                         where: { id: req.auth.userId },
                      })
-                        .then(() => {
-                           const updatedProfil = {
-                              ...newUserData,
-                           }
-                           Posts.update(
-                              {
-                                 publisherName: newUserData.userName,
-                                 publisherImg: newUserData.profilImg,
-                              },
-                              { where: { userId: req.auth.userId } }
-                           )
-                              .then(() =>
-                                 res.status(201).json({
-                                    message: 'Utilisateur modifié',
-                                    updatedProfil: updatedProfil,
-                                 })
-                              )
-                              .catch((error) => res.status(400).json({ error }))
-                        })
+                        .then(() =>
+                           res.status(201).json({
+                              message: 'Utilisateur modifié',
+                              updatedProfil: newUserData,
+                           })
+                        )
                         .catch((error) => res.status(400).json({ error }))
                   })
                }
@@ -155,17 +131,10 @@ exports.softModifyProfil = (req, res, next) => {
                         ...newUserData,
                         profilImg: user.profilImg,
                      }
-                     Posts.update(
-                        { publisherName: newUserData.userName },
-                        { where: { userId: req.auth.userId } }
-                     )
-                        .then(() =>
-                           res.status(201).json({
-                              message: 'Utilisateur modifié',
-                              updatedProfil: updatedProfil,
-                           })
-                        )
-                        .catch((error) => res.status(400).json({ error }))
+                     return res.status(201).json({
+                        message: 'Utilisateur modifié',
+                        updatedProfil: updatedProfil,
+                     })
                   })
                   .catch((error) => res.status(400).json({ error }))
             } else {
@@ -177,14 +146,14 @@ exports.softModifyProfil = (req, res, next) => {
 }
 
 exports.checkPassword = (req, res, next) => {
-   if (req.params.id != req.auth.userId) {
+   if (req.params.id != req.auth.userId && !req.auth.isAdmin) {
       return res.status(500).json({ message: 'Opération non autorisé' })
    } else {
       User.findByPk(req.params.id).then((user) => {
          bcrypt
             .compare(req.body.currentPassword, user.password)
             .then((valid) => {
-               if (!valid) {
+               if (!valid && !req.auth.isAdmin) {
                   return res.status(500).json({
                      message: 'Opération non autorisé',
                   })
@@ -204,13 +173,7 @@ exports.hardModifyProfil = (req, res, next) => {
             return res.status(500).json({ message: 'Opération non autorisé' })
          } else {
             const newUserData = {}
-            if (req.body.email && req.newPassword) {
-               console.log(
-                  'email',
-                  req.body.email,
-                  '+ password',
-                  req.newPassword
-               )
+            if (req.body.email && req.body.newPassword) {
                bcrypt
                   .hash(req.body.newPassword, 10)
                   .then((hash) => {
@@ -226,7 +189,6 @@ exports.hardModifyProfil = (req, res, next) => {
                   })
                   .catch((error) => res.status(500).json({ error }))
             } else if (req.body.newPassword) {
-               console.log('password')
                bcrypt
                   .hash(req.body.newPassword, 10)
                   .then((hash) => {
@@ -241,7 +203,6 @@ exports.hardModifyProfil = (req, res, next) => {
                   })
                   .catch((error) => res.status(500).json({ error }))
             } else if (req.body.email) {
-               console.log('email')
                newUserData.email = req.body.email
                User.update(newUserData, { where: { id: req.params.id } })
                   .then(() =>
@@ -257,7 +218,24 @@ exports.hardModifyProfil = (req, res, next) => {
 }
 
 exports.deleteProfil = (req, res, next) => {
-   User.destroy({ where: { id: req.params.id } })
-      .then(() => res.status(201).json({ message: 'Utilisateur Supprimé' }))
+   User.findByPk(req.params.id)
+      .then((user) => {
+         if (user.profilImg) {
+            const filename = user.profilImg.split('/images/')[1]
+            fs.unlink(`images/${filename}`, () => {
+               User.destroy({ where: { id: req.params.id } })
+                  .then(() =>
+                     res.status(201).json({ message: 'Utilisateur Supprimé' })
+                  )
+                  .catch((error) => res.status(401).json({ error }))
+            })
+         } else {
+            User.destroy({ where: { id: req.params.id } })
+               .then(() =>
+                  res.status(201).json({ message: 'Utilisateur Supprimé' })
+               )
+               .catch((error) => res.status(401).json({ error }))
+         }
+      })
       .catch((error) => res.status(401).json({ error }))
 }

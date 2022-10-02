@@ -48,6 +48,7 @@ function Home() {
       axios
          .get('/posts')
          .then((res) => {
+            console.log(res.data.posts)
             setAllPosts(res.data.posts.slice(0).reverse())
             setLikesArray(res.data.likesArray)
          })
@@ -96,18 +97,7 @@ function Home() {
                />
             )}
             {allPosts.map(
-               (
-                  {
-                     description,
-                     imageUrl,
-                     userId,
-                     likes,
-                     id,
-                     publisherName,
-                     publisherImg,
-                  },
-                  i
-               ) => (
+               ({ description, imageUrl, userId, likes, id, user }, i) => (
                   <li key={id} className="post">
                      <Post
                         id={id}
@@ -115,8 +105,7 @@ function Home() {
                         imageUrl={imageUrl}
                         userId={userId}
                         likes={likes}
-                        publisherName={publisherName}
-                        publisherImg={publisherImg}
+                        user={user}
                         activeUser={activeUser}
                         activeToken={activeToken}
                         setUpdate={setUpdate}

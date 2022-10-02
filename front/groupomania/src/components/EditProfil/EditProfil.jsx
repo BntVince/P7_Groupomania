@@ -4,6 +4,7 @@ import './EditProfil.css'
 import cancelNewPost from '../../assets/cancel-new-post.png'
 import axios from 'axios'
 import DeleteAlert from '../DeleteAlert/DeleteAlert'
+import defaultProfilImg from '../../assets/default.png'
 
 function EditProfil({
    profilUser,
@@ -11,15 +12,16 @@ function EditProfil({
    setActiveUser,
    setProfilUser,
    setEditProfil,
+   deleteAlert,
+   setDeleteAlert,
 }) {
    const [softEditProfil, setSoftEditProfil] = useState(true)
    const [file, setFile] = useState(null)
    const [preview, setPreview] = useState(profilUser.profilImg)
-   const [userName, setUserName] = useState(profilUser.userName)
+   const [userName, setUserName] = useState('')
    const [email, setEmail] = useState('')
    const [newPassword, setNewPassword] = useState('')
    const [currentPassword, setCurrentPassword] = useState('')
-   const [deleteAlert, setDeleteAlert] = useState(false)
 
    function cancelImg() {
       setFile(null)
@@ -42,13 +44,13 @@ function EditProfil({
             alert("Vous n'avez saisie aucune modification à envoyer")
          } else {
             const userData = new FormData()
-            userName === '' && setUserName(profilUser.userName)
-            userData.append('userName', userName)
+            userName === ''
+               ? userData.append('userName', profilUser.userName)
+               : userData.append('userName', userName)
             if (file) {
                userData.append('image', file, file.name)
             }
             axios.put(`/auth/${profilUser.id}/soft`, userData).then((res) => {
-               console.log(res)
                setActiveUser({
                   ...activeUser,
                   userName: res.data.updatedProfil.userName,
@@ -95,11 +97,19 @@ function EditProfil({
                         console.log(e.target.files[0])
                      }}
                   />
-                  <img
-                     src={preview}
-                     alt=""
-                     className="form-profil-img-preview"
-                  />
+                  {preview ? (
+                     <img
+                        src={preview}
+                        alt=""
+                        className="form-profil-img-preview"
+                     />
+                  ) : (
+                     <img
+                        src={defaultProfilImg}
+                        alt=""
+                        className="form-profil-img-preview"
+                     />
+                  )}
 
                   <label htmlFor="file" className="form-profil-img-label btn">
                      Changer la photo
@@ -119,6 +129,7 @@ function EditProfil({
                   id="userName"
                   className="form-profil-username"
                   placeholder="Nom d'utilisateur"
+                  value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                />
 
@@ -134,22 +145,25 @@ function EditProfil({
                   id="email"
                   className="form-profil-username"
                   placeholder="Nouvelle adresse email"
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                />
                <input
                   type="password"
                   name="password"
-                  id="password"
+                  id="old-password"
                   className="form-profil-username"
                   placeholder="Nouveau mot de passe"
+                  value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                />
                <input
                   type="password"
                   name="password"
-                  id="password"
+                  id="current-password"
                   className="form-profil-username"
                   placeholder="Ancien mot de passe"
+                  value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                />
                <span>
@@ -181,7 +195,7 @@ function EditProfil({
             {deleteAlert && (
                <DeleteAlert
                   setDeleteAlert={setDeleteAlert}
-                  activeUser={activeUser}
+                  profilUser={profilUser}
                />
             )}
             <button

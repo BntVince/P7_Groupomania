@@ -2,10 +2,24 @@ const fs = require('fs')
 const db = require('../models')
 const Posts = db.posts
 const Likes = db.likes
+const User = db.users
 
 exports.getAllPosts = (req, res, next) => {
    Posts.findAll({
       attributes: { exclude: ['updatedAt', 'createdAt'] },
+      include: {
+         model: User,
+         attributes: {
+            exclude: [
+               'updatedAt',
+               'createdAt',
+               'id',
+               'email',
+               'password',
+               'isAdmin',
+            ],
+         },
+      },
    })
       .then((posts) => {
          Likes.findAll({
@@ -35,8 +49,6 @@ exports.getAllPosts = (req, res, next) => {
 exports.addNewPost = (req, res, next) => {
    let newPost = {
       userId: req.auth.userId,
-      publisherName: req.body.userName,
-      publisherImg: req.body.profilImg,
       description: req.body.description,
       likes: 0,
    }
@@ -72,7 +84,7 @@ exports.modifyPost = (req, res, next) => {
 
       Posts.findByPk(req.params.id)
          .then((post) => {
-            if (post.userId == req.auth.userId) {
+            if (post.userId == req.auth.userId || req.auth.isAdmin) {
                if (post.imageUrl) {
                   const filename = post.imageUrl.split('/images/')[1]
                   fs.unlink(`images/${filename}`, () => {
@@ -117,7 +129,7 @@ exports.modifyPost = (req, res, next) => {
    } else {
       Posts.findByPk(req.params.id)
          .then((post) => {
-            if (post.userId == req.auth.userId) {
+            if (post.userId == req.auth.userId || req.auth.isAdmin) {
                if (req.body.cancelImg === 'true') {
                   postObject.imageUrl = null
 
@@ -164,13 +176,13 @@ exports.modifyPost = (req, res, next) => {
 }
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
+//--------------------------------DELETE POSTS----------------------------------
 //------------------------------------------------------------------------------
 
 exports.deletePosts = (req, res, next) => {
    Posts.findByPk(req.params.id)
       .then((post) => {
-         if (post.userId == req.auth.userId) {
+         if (post.userId == req.auth.userId || req.auth.isAdmin) {
             if (post.imageUrl === '' || !post.imageUrl) {
                Posts.destroy({ where: { id: req.params.id } })
                   .then(() =>

@@ -4,6 +4,7 @@ import './NewPost.css'
 import imageNewpost from '../../assets/ajout-image-post.png'
 import cancelNewPost from '../../assets/cancel-new-post.png'
 import postNewPost from '../../assets/post-new-post.png'
+import defaultProfilImg from '../../assets/default.png'
 
 function NewPost({
    setNewPost,
@@ -73,18 +74,28 @@ function NewPost({
                newPostData.append('image', file, file.name)
 
                axios.post('/posts', newPostData).then((res) => {
+                  let postToAdd = res.data.postToAdd
+                  postToAdd.user = {
+                     userName: activeUser.userName,
+                     profilImg: activeUser.profilImg,
+                  }
                   setNewPost(false)
                   setUpdate({
                      new: true,
-                     postToAdd: res.data.postToAdd,
+                     postToAdd: postToAdd,
                   })
                })
             } else {
                axios.post('/posts', newPostData).then((res) => {
+                  let postToAdd = res.data.postToAdd
+                  postToAdd.user = {
+                     userName: activeUser.userName,
+                     profilImg: activeUser.profilImg,
+                  }
                   setNewPost(false)
                   setUpdate({
                      new: true,
-                     postToAdd: res.data.postToAdd,
+                     postToAdd: postToAdd,
                   })
                })
             }
@@ -93,22 +104,32 @@ function NewPost({
                newPostData.append('image', file, file.name)
 
                axios.put(`/posts/${id}`, newPostData).then((res) => {
+                  let updatedPost = res.data.updatedPost
+                  updatedPost.user = {
+                     userName: activeUser.userName,
+                     profilImg: activeUser.profilImg,
+                  }
                   console.log(res.data.updatedPost)
                   setEditPost(false)
                   setUpdate({
                      edit: true,
                      i: i,
-                     updatedPost: res.data.updatedPost,
+                     updatedPost: updatedPost,
                   })
                })
             } else {
                newPostData.append('cancelImg', cancelImgToSend)
                axios.put(`/posts/${id}`, newPostData).then((res) => {
+                  let updatedPost = res.data.updatedPost
+                  updatedPost.user = {
+                     userName: activeUser.userName,
+                     profilImg: activeUser.profilImg,
+                  }
                   setEditPost(false)
                   setUpdate({
                      edit: true,
                      i: i,
-                     updatedPost: res.data.updatedPost,
+                     updatedPost: updatedPost,
                   })
                })
             }
@@ -121,11 +142,19 @@ function NewPost({
          <form className="post__body new-post-body" onSubmit={handleSubmit}>
             <div className="post__body__header new-post-body-header">
                <div className="post__body__header__left">
-                  <img
-                     src={activeUser.profilImg}
-                     alt=""
-                     className="image-profil"
-                  />
+                  {activeUser.profilImg ? (
+                     <img
+                        src={activeUser.profilImg}
+                        alt=""
+                        className="image-profil"
+                     />
+                  ) : (
+                     <img
+                        src={defaultProfilImg}
+                        alt=""
+                        className="image-profil"
+                     />
+                  )}
                   <span> {activeUser.userName} </span>
                </div>
                <button

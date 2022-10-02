@@ -16,6 +16,9 @@ module.exports = (sequelize, Sequelize) => {
       profilImg: {
          type: Sequelize.STRING,
       },
+      isAdmin: {
+         type: Sequelize.BOOLEAN,
+      },
    })
    return User
 }
