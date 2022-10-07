@@ -5,6 +5,10 @@ const User = db.users
 const Posts = db.posts
 const fs = require('fs')
 
+//------------------------------------------------------------------------------
+//---------------------------------CREATION DE COMPTE---------------------------
+//------------------------------------------------------------------------------
+
 exports.signup = (req, res, next) => {
    bcrypt
       .hash(req.body.password, 10)
@@ -23,6 +27,10 @@ exports.signup = (req, res, next) => {
       })
       .catch((error) => res.status(500).json({ error }))
 }
+
+//------------------------------------------------------------------------------
+//---------------------------------CONNEXION------------------------------------
+//------------------------------------------------------------------------------
 
 exports.login = (req, res, next) => {
    User.findOne({ where: { email: req.body.email } })
@@ -57,6 +65,10 @@ exports.login = (req, res, next) => {
       .catch((error) => res.status(500).json({ error }))
 }
 
+//------------------------------------------------------------------------------
+//-------------------------------CHECK ACTIVE USER------------------------------
+//------------------------------------------------------------------------------
+
 exports.check = (req, res, next) => {
    User.findByPk(req.auth.userId, {
       attributes: { exclude: ['createdAt', 'updatedAt', 'password', 'email'] },
@@ -77,6 +89,10 @@ exports.getProfil = (req, res, next) => {
       })
       .catch((error) => res.status(500).json({ error }))
 }
+
+//------------------------------------------------------------------------------
+//--------------------------------SOFT MODIFY-----------------------------------
+//------------------------------------------------------------------------------
 
 exports.softModifyProfil = (req, res, next) => {
    let newUserData = { userName: req.body.userName }
@@ -145,6 +161,10 @@ exports.softModifyProfil = (req, res, next) => {
    }
 }
 
+//------------------------------------------------------------------------------
+//---------------------------MIDDLEWARE PASSWORD--------------------------------
+//------------------------------------------------------------------------------
+
 exports.checkPassword = (req, res, next) => {
    if (req.params.id != req.auth.userId && !req.auth.isAdmin) {
       return res.status(500).json({ message: 'Opération non autorisé' })
@@ -165,6 +185,10 @@ exports.checkPassword = (req, res, next) => {
       })
    }
 }
+
+//------------------------------------------------------------------------------
+//--------------------------------HARD MODIFY-----------------------------------
+//------------------------------AFTER PASS CHECK--------------------------------
 
 exports.hardModifyProfil = (req, res, next) => {
    User.findByPk(req.params.id)
@@ -216,6 +240,10 @@ exports.hardModifyProfil = (req, res, next) => {
       })
       .catch((error) => res.status(401).json({ error }))
 }
+
+//------------------------------------------------------------------------------
+//-------------------------------DELETE ACCOUNT---------------------------------
+//------------------------------AFTER PASS CHECK--------------------------------
 
 exports.deleteProfil = (req, res, next) => {
    User.findByPk(req.params.id)

@@ -65,6 +65,7 @@ function Post({
                imageUrl={imageUrl}
                setUpdate={setUpdate}
                i={i}
+               user={user}
             />
          ) : (
             <div className="post-container">

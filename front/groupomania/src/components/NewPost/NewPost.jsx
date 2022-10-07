@@ -16,6 +16,7 @@ function NewPost({
    description,
    imageUrl,
    setUpdate,
+   user,
    i,
 }) {
    const [scHeight, setScHeight] = useState(52)
@@ -75,10 +76,6 @@ function NewPost({
 
                axios.post('/posts', newPostData).then((res) => {
                   let postToAdd = res.data.postToAdd
-                  postToAdd.user = {
-                     userName: activeUser.userName,
-                     profilImg: activeUser.profilImg,
-                  }
                   setNewPost(false)
                   setUpdate({
                      new: true,
@@ -88,10 +85,6 @@ function NewPost({
             } else {
                axios.post('/posts', newPostData).then((res) => {
                   let postToAdd = res.data.postToAdd
-                  postToAdd.user = {
-                     userName: activeUser.userName,
-                     profilImg: activeUser.profilImg,
-                  }
                   setNewPost(false)
                   setUpdate({
                      new: true,
@@ -105,10 +98,6 @@ function NewPost({
 
                axios.put(`/posts/${id}`, newPostData).then((res) => {
                   let updatedPost = res.data.updatedPost
-                  updatedPost.user = {
-                     userName: activeUser.userName,
-                     profilImg: activeUser.profilImg,
-                  }
                   console.log(res.data.updatedPost)
                   setEditPost(false)
                   setUpdate({
@@ -121,10 +110,6 @@ function NewPost({
                newPostData.append('cancelImg', cancelImgToSend)
                axios.put(`/posts/${id}`, newPostData).then((res) => {
                   let updatedPost = res.data.updatedPost
-                  updatedPost.user = {
-                     userName: activeUser.userName,
-                     profilImg: activeUser.profilImg,
-                  }
                   setEditPost(false)
                   setUpdate({
                      edit: true,
@@ -155,7 +140,7 @@ function NewPost({
                         className="image-profil"
                      />
                   )}
-                  <span> {activeUser.userName} </span>
+                  <span> {newPost ? activeUser.userName : user.userName} </span>
                </div>
                <button
                   className="new-post-btn"

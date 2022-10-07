@@ -7,6 +7,7 @@ const User = db.users
 exports.getAllPosts = (req, res, next) => {
    Posts.findAll({
       attributes: { exclude: ['updatedAt', 'createdAt'] },
+      order: ['createdAt'],
       include: {
          model: User,
          attributes: {

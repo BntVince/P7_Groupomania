@@ -65,6 +65,7 @@ function Home() {
       } else if (update.edit) {
          let currentAllPosts = allPosts
          let postToEdit = update.updatedPost
+         postToEdit.user = currentAllPosts[update.i].user
          currentAllPosts[update.i] = postToEdit
          setAllPosts(currentAllPosts)
          setUpdate({})
