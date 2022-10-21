@@ -72,6 +72,10 @@ function Home() {
       } else if (update.new) {
          let currentAllPosts = allPosts
          let postToAdd = update.postToAdd
+         postToAdd.user = {
+            userName: activeUser.userName,
+            profilImg: activeUser.profilImg,
+         }
          currentAllPosts.unshift(postToAdd)
          setAllPosts(currentAllPosts)
          setUpdate({})

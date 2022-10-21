@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './EditProfil.css'
 import cancelNewPost from '../../assets/cancel-new-post.png'
 import axios from 'axios'
@@ -15,6 +16,7 @@ function EditProfil({
    deleteAlert,
    setDeleteAlert,
 }) {
+   const navigate = useNavigate()
    const [softEditProfil, setSoftEditProfil] = useState(true)
    const [file, setFile] = useState(null)
    const [preview, setPreview] = useState(profilUser.profilImg)
@@ -76,7 +78,9 @@ function EditProfil({
             userData.email = email
             userData.newPassword = newPassword
             userData.currentPassword = currentPassword
-            axios.put(`/auth/${profilUser.id}/hard`, userData)
+            axios
+               .put(`/auth/${profilUser.id}/hard`, userData)
+               .then(navigate('/home'))
          }
       }
    }
