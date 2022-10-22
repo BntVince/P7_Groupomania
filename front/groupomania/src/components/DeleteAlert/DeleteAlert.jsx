@@ -2,7 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import cancelNewPost from '../../assets/cancel-new-post.png'
+import cancelNewPost from '../../assets/cancel-post.png'
 import './DeleteAlert.css'
 
 function DeleteAlert({ setDeleteAlert, profilUser }) {

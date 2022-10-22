@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import './NewPost.css'
 import imageNewpost from '../../assets/ajout-image-post.png'
-import cancelNewPost from '../../assets/cancel-new-post.png'
+import cancelNewPost from '../../assets/cancel-post.png'
 import postNewPost from '../../assets/post-new-post.png'
 import defaultProfilImg from '../../assets/default.png'
 
