@@ -7,7 +7,7 @@ npm i package.json
 Pour le dossier "back" et "groupomania"
 
 Il vous faudra également créer un fichier .env qui devra contenir :
-JWT_SECRET="suivi d'une suite de caractère de votre choix"
+JWT_SECRET="suivi d'une suite de caractère de votre choix"			 
 PORT=3001
 
 
