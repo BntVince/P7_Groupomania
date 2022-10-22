@@ -1,9 +1,11 @@
 # P7_Groupomania
 
-Dossier back: 
+Après l'importation du projet, il faudra, dans le terminal, : 
 
-npm start.
-.env à récupérer
-Mamp à installer
+npm i package.json 
 
-Dossier front à la racine (creat-react-app Groupomania) à faire
+Pour le dossier "back" et "groupomania"
+
+Il vous faudra également créer un fichier .env qui devra contenir JWT_SECRET=""  suivi d'une suite de caractère de votre choix à la place des ""
+Ou aller écrire directement la clé pour JWT la ou elle est utilisé c'est à dire : ./back/middleware/auth.js ligne 6
+                                                                                  ./back/controllers/user.controller.js ligne 56
