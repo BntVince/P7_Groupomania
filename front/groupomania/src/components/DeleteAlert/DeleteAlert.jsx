@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../http-common'
 import React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'

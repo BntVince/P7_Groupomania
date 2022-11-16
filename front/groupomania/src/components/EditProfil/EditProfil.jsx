@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './EditProfil.css'
 import cancelNewPost from '../../assets/cancel-post.png'
-import axios from 'axios'
+import axios from '../../http-common'
 import DeleteAlert from '../DeleteAlert/DeleteAlert'
 import defaultProfilImg from '../../assets/default.png'
 

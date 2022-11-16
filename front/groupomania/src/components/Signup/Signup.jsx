@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import http from '../../http-common'
+import axios from '../../http-common'
+import { useNavigate } from 'react-router-dom'
 
 function Signup({ setHaveAccount }) {
    const [userName, setUserName] = useState('')
    const [email, setEmail] = useState('')
    const [password, setPassword] = useState('')
+   const navigate = useNavigate()
 
    const handleSubmit = (e) => {
       e.preventDefault()
@@ -18,13 +20,21 @@ function Signup({ setHaveAccount }) {
       if (userName === '' || email === '' || password === '') {
          alert("Veuillez remplir les champs du formulaire d'inscription")
       } else {
-         http
+         axios
             .post('/auth/signup', userData)
             .then((res) => {
-               res.status = 200 ? setHaveAccount(true) : null
+               const groupomaniaActiveUser = {
+                  token: res.data.token,
+               }
+
+               sessionStorage.setItem(
+                  'groupomaniaActiveUser',
+                  JSON.stringify(groupomaniaActiveUser)
+               )
+               navigate('/home')
             })
             .catch((error) => {
-               console.log(error)
+               alert(error.response.data.message)
             })
       }
    }

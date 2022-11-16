@@ -1,4 +1,4 @@
-import http from '../../http-common'
+import axios from '../../http-common'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -18,7 +18,7 @@ function Signin() {
       if (email === '' || password === '') {
          alert("Veuillez remplir les champs du formulaire d'inscription")
       } else {
-         http
+         axios
             .post('/auth/login', userData)
             .then((res) => {
                const groupomaniaActiveUser = {

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../http-common'
 import { useState, useEffect } from 'react'
 import './NewPost.css'
 import imageNewpost from '../../assets/ajout-image-post.png'
@@ -67,8 +67,6 @@ function NewPost({
       } else {
          const newPostData = new FormData()
          newPostData.append('description', descriptionToSend)
-         newPostData.append('userName', activeUser.userName)
-         newPostData.append('profilImg', activeUser.profilImg)
 
          if (newPost) {
             if (file) {

@@ -20,9 +20,17 @@ exports.signup = (req, res, next) => {
             isAdmin: false,
          }
          User.create(user)
-            .then(() =>
-               res.status(201).json({ message: 'Utilisateur enregistré' })
-            )
+            .then((user) => {
+               res.status(201).json({
+                  message: 'Utilisateur enregistré',
+                  userId: user.id,
+                  token: jwt.sign(
+                     { userId: user.id, isAdmin: user.isAdmin },
+                     process.env.JWT_SECRET,
+                     { expiresIn: '24h' }
+                  ),
+               })
+            })
             .catch((error) => res.status(400).json({ error }))
       })
       .catch((error) => res.status(500).json({ error }))
@@ -104,17 +112,14 @@ exports.softModifyProfil = (req, res, next) => {
       User.findByPk(req.params.id)
          .then((user) => {
             if (user.id == req.auth.userId) {
-               if (!user.profilImg) {
+               console.log(user.profilImg)
+               if (user.profilImg == null) {
                   User.update(newUserData, { where: { id: req.auth.userId } })
                      .then(() =>
-                        res
-                           .status(201)
-                           .json({
-                              message: 'Utilisateur modifié',
-                              updatedProfil: newUserData,
-                           })
-
-                           .catch((error) => res.status(400).json({ error }))
+                        res.status(201).json({
+                           message: 'Utilisateur modifié',
+                           updatedProfil: newUserData,
+                        })
                      )
                      .catch((error) => res.status(400).json({ error }))
                } else {

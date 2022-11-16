@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../http-common'
 import Header from '../../components/Header/Header'
 import ProfilHeader from '../../components/ProfilHeader/ProfilHeader'
 import Footer from '../../components/Footer/Footer'
@@ -28,7 +28,6 @@ function Profil() {
    const { profilId } = useParams()
 
    axios.defaults.headers.common = { Authorization: `Bearer ${activeToken}` }
-   axios.defaults.baseURL = 'http://localhost:3001/api'
 
    useEffect(() => {
       // ------------CHECK---------------
